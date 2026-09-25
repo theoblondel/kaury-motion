@@ -1,0 +1,46 @@
+{
+  "name": "kaury-motion",
+  "version": "0.1.0",
+  "description": "Spectacular, zero-dependency motion framework by Kaury Studio: tween engine, springs, timelines, text splitting, marquees, magnetic buttons, 3D tilt and extrude.",
+  "type": "module",
+  "main": "./dist/kaury-motion.js",
+  "module": "./dist/kaury-motion.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/kaury-motion.js"
+    }
+  },
+  "unpkg": "./dist/kaury-motion.min.js",
+  "jsdelivr": "./dist/kaury-motion.min.js",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "node build.mjs && tsc -p tsconfig.json --emitDeclarationOnly",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "studio": "npm run build && npx serve ."
+  },
+  "keywords": [
+    "animation",
+    "motion",
+    "tween",
+    "spring",
+    "timeline",
+    "marquee",
+    "split-text",
+    "3d",
+    "kaury"
+  ],
+  "author": "Théo Blondel <hello@kaury.studio> (https://kaury.studio)",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "jsdom": "^30.1.1",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
+  }
+}
