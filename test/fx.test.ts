@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { split, reveal, counter, auto, readOptions, ring, marquee } from '../src';
+import { split, reveal, counter, auto, readOptions, ring, marquee, wave } from '../src';
 
 describe('split', () => {
   it('splits words and chars, keeps an accessible label and reverts', () => {
@@ -19,6 +19,28 @@ describe('split', () => {
     expect(a.targets).toHaveLength(3);
     a.seek(a.duration);
     expect((a.targets[2] as HTMLElement).style.opacity).toBe('1');
+  });
+});
+
+describe('wave and typewriter', () => {
+  it('wave splits letters, moves them and restores the text when stopped', async () => {
+    const el = document.createElement('p');
+    el.textContent = 'Hey';
+    const stop = wave(el, { amplitude: 10 });
+    expect(el.querySelectorAll('.km-char')).toHaveLength(3);
+    await new Promise((r) => setTimeout(r, 60));
+    expect((el.querySelector('.km-char') as HTMLElement).style.transform).toMatch(/translateY/);
+    stop();
+    expect(el.innerHTML).toBe('Hey');
+  });
+  it('typewriter shows each letter instantly, spaced by the stagger', () => {
+    const el = document.createElement('p');
+    el.textContent = 'abc';
+    const a = reveal(el, { effect: 'type', by: 'chars', each: 50, autoplay: false });
+    expect(a.duration).toBe(101);
+    a.seek(51);
+    const chars = a.targets as HTMLElement[];
+    expect([chars[0].style.opacity, chars[1].style.opacity, chars[2].style.opacity]).toEqual(['1', '1', '0']);
   });
 });
 

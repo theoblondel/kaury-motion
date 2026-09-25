@@ -7,11 +7,11 @@ A zero-dependency motion framework: a tween engine with real springs, timelines 
 - **~11 KB** gzipped, **0** dependencies, TypeScript types included
 - ESM build and a `<script>` build exposing `KauryMotion`
 - Respects the OS "reduce motion" setting automatically
-- 24 unit tests
+- 26 unit tests
 
 ## The studio
 
-`studio/index.html` is a playground for every effect: move the sliders, see it live, then copy the code as an ES module, as an HTML snippet, or download a **standalone page** with the framework inlined.
+`studio/index.html` is a playground for every effect, written in French for non-developers: pick an effect by what it is for, start from a ready-made style (or hit *Surprise*), tune it, then download a **standalone page** with the framework inlined, copy a self-contained block for WordPress / Webflow / Wix, or copy the ES module code.
 
 ```bash
 npm install
@@ -61,7 +61,8 @@ Easings: `kaury` (the house curve), `linear`, `in/out/inOut` + `Quad`, `Cubic`, 
 | Effect | Notes |
 |---|---|
 | `split(el, { type, mask })` | Chars, words or lines, screen-reader friendly, `revert()` restores the markup. |
-| `reveal(el, { effect, by, each })` | Presets: `rise`, `fade`, `blur`, `flip`, `pop`, `slide`, `swing`, `zoom`. |
+| `reveal(el, { effect, by, each })` | Presets: `rise`, `fade`, `blur`, `flip`, `pop`, `slide`, `swing`, `zoom`, `type` (typewriter). |
+| `wave(el, { amplitude, duration, offset, rotate })` | A never-ending wave running through the letters. |
 | `scramble(el, { text, chars })` | Decodes text from random glyphs. |
 | `counter(el, { to, prefix, suffix, decimals })` | Formatted count-up. |
 | `marquee(el, { speed, direction, scrollBoost, skew, pauseOnHover })` | Seamless infinite band, reacts to scroll speed and direction. |

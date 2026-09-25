@@ -1,4 +1,4 @@
-import { counter, reveal, scramble } from './fx/text';
+import { counter, reveal, scramble, wave } from './fx/text';
 import { marquee } from './fx/marquee';
 import { ring } from './fx/ring';
 import { magnetic, tilt } from './fx/pointer';
@@ -28,13 +28,14 @@ const handlers: Record<string, Handler> = {
   float: (el, o) => float(el, o),
   scramble: (el, o) => inView(el, () => void scramble(el, o), o),
   counter: (el, o) => inView(el, () => void counter(el, { ...o, to: +o.to }), o),
+  wave: (el, o) => wave(el, o),
 };
 
 /**
  * Wires up every `[data-km]` element under `root`. Several effects can be
  * combined with spaces: `data-km="extrude tilt float"`.
  *
- * Text reveals: `data-km="rise|fade|blur|flip|pop|slide|swing|zoom"`, with
+ * Text reveals: `data-km="rise|fade|blur|flip|pop|slide|swing|zoom|type"`, with
  * `data-km-by="chars"`, `data-km-each="40"`, `data-km-delay="200"`…
  */
 export function auto(root: ParentNode = document) {

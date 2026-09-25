@@ -7,7 +7,7 @@ export { interpolator, clamp, lerp, mapRange } from './core/interpolate';
 export { ticker, config, prefersReducedMotion } from './core/ticker';
 
 export { split, type SplitOptions, type SplitResult } from './fx/split';
-export { reveal, scramble, counter, presets, type RevealOptions, type ScrambleOptions, type CounterOptions } from './fx/text';
+export { reveal, scramble, counter, wave, presets, type RevealOptions, type ScrambleOptions, type CounterOptions, type WaveOptions } from './fx/text';
 export { marquee, type MarqueeOptions, type MarqueeControls } from './fx/marquee';
 export { ring, type RingOptions } from './fx/ring';
 export { magnetic, tilt, cursor, type MagneticOptions, type TiltOptions, type CursorOptions } from './fx/pointer';

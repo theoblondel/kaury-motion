@@ -1,4 +1,5 @@
-import { animate, toArray, type AnimateOptions, type PropValue, type Targets } from '../core/animate';
+import { animate, set, toArray, type AnimateOptions, type PropValue, type Targets } from '../core/animate';
+import { prefersReducedMotion, ticker } from '../core/ticker';
 import { stagger, type StaggerOptions } from '../core/stagger';
 import { split } from './split';
 
@@ -12,6 +13,8 @@ export const presets: Record<string, Record<string, PropValue>> = {
   slide: { x: ['-60%', '0%'], opacity: [0, 1] },
   swing: { rotate: [14, 0], y: ['120%', '0%'] },
   zoom: { scale: [2.2, 1], opacity: [0, 1], filter: ['blur(8px)', 'blur(0px)'] },
+  /** Typewriter: each piece appears at once, the stagger sets the typing speed. */
+  type: { opacity: [0, 1] },
 };
 
 export interface RevealOptions extends AnimateOptions {
@@ -38,7 +41,7 @@ export function reveal(targets: Targets, opts: RevealOptions = {}) {
   const s = split(targets, { type: by, mask: needsMask });
   if (effect === 'flip') s.units.forEach((u) => (u.parentElement!.style.perspective = '600px'));
   return animate(s.units, props, {
-    duration: 1100,
+    duration: effect === 'type' ? 1 : 1100,
     ease: 'kaury',
     ...anim,
     delay: stagger(each ?? (by === 'chars' ? 28 : by === 'lines' ? 110 : 60), { from: staggerFrom, start: typeof anim.delay === 'number' ? anim.delay : 0 }),
@@ -111,4 +114,35 @@ export function counter(target: Targets, opts: CounterOptions) {
       anim.onUpdate?.(self);
     },
   });
+}
+
+export interface WaveOptions {
+  /** Height of the wave in px. Default 14. */
+  amplitude?: number;
+  /** One full wave in ms. Default 1400. */
+  duration?: number;
+  /** Phase shift between neighbours, 0..1 of a wave. Default 0.08. */
+  offset?: number;
+  by?: 'chars' | 'words';
+  /** Also rotate each piece a little, in degrees. Default 0. */
+  rotate?: number;
+}
+
+/** A never-ending wave running through the letters. Returns a function that stops it. */
+export function wave(targets: Targets, opts: WaveOptions = {}) {
+  const { amplitude = 14, duration = 1400, offset = 0.08, by = 'chars', rotate = 0 } = opts;
+  const s = split(targets, { type: by });
+  if (prefersReducedMotion()) return () => s.revert();
+  const start = ticker.now();
+  const stop = ticker.add((t) => {
+    const phase = ((t - start) / duration) * Math.PI * 2;
+    s.units.forEach((u, i) => {
+      const k = Math.sin(phase - i * offset * Math.PI * 2);
+      set(u, rotate ? { y: +(-k * amplitude).toFixed(2), rotate: +(k * rotate).toFixed(2) } : { y: +(-k * amplitude).toFixed(2) });
+    });
+  });
+  return () => {
+    stop();
+    s.revert();
+  };
 }

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kaury Motion Studio</title>
-<meta name="description" content="Kaury Motion: an open-source motion framework by Kaury Studio. Tune every effect live and export the code.">
+<meta name="description" content="Kaury Motion : des animations de studio pour ton site. Choisis un effet, règle-le, récupère le code ou une page toute prête.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap">
@@ -14,105 +14,161 @@
 <!--STYLE--><link rel="stylesheet" href="studio.css"><!--/STYLE-->
 </head>
 <body>
-
 <div class="page">
-  <header class="hero">
+  <header class="topbar">
+    <a class="brand" href="#top"><svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 232" aria-hidden="true"> <rect width="232" height="232" rx="52" fill="#F56E2E"/> <g transform="translate(16, 36)"> <path d="M199.75 142.65L184.57 113.36C183.98 112.21 182.83 111.54 181.64 111.54C181.21 111.54 180.76 111.62 180.33 111.82C167.47 117.53 155.41 120.43 144.5 120.43C130.22 121.08 107.65 116.91 100.07 103.4C93.61 91.88 98.16 72.67 110.11 63.56C121.25 55.06 135.98 53.37 149.31 55.8C150.65 56.04 152.02 56.36 153.12 57.19C156.61 59.86 154.58 67.37 152.39 70.19C150.1 73.14 146.16 75.07 141.58 75.47C140.99 75.53 140.39 75.55 139.79 75.55C138.9 75.55 138.01 75.49 137.12 75.38C134.18 75.01 131.18 74.21 128.2 73.15C128.2 73.15 121.95 105.27 144.43 109.01C182.18 115.29 191.09 78.25 191.25 77.69C191.49 76.6 197.12 50.93 183.28 32.79C174.73 21.59 160.8 15.91 141.87 15.91C141.11 15.91 140.35 15.91 139.56 15.94C90.98 17.09 58.95 53.7 46.2 71.53V3.44C46.2 1.54 44.71 0 42.88 0H3.32001C1.49001 0 0 1.54 0 3.44V156.98C0 158.87 1.48001 160.42 3.32001 160.42H41.11C42.57 160.42 43.86 159.43 44.28 157.97C45.57 153.61 45.76 132.1 45.76 119.53C45.76 117.16 48.74 116.24 49.97 118.23C59.67 133.88 87.12 166.81 143.66 160.42C172.89 157.11 197.32 147.91 198.33 147.38C199.14 146.96 199.73 146.22 200 145.34C200.27 144.46 200.19 143.49 199.76 142.67L199.75 142.65Z" fill="#F1E8CB"/> </g> </svg><span>Kaury Motion</span></a>
+    <nav class="topnav" aria-label="Sections">
+      <a href="#comment">Comment ça marche</a>
+      <a href="#studio">Studio</a>
+      <a href="#dev">Développeurs</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="top">
     <div class="hero-copy">
-      <p class="eyebrow">Kaury Studio · open-source motion framework</p>
+      <p class="eyebrow">Un outil gratuit de Kaury Studio</p>
       <h1 class="hero-title"><span id="hero-title">Kaury Motion</span><span class="dot" id="hero-dot">.</span></h1>
-      <p class="hero-lede">Spectacular web animation in one small file. Springs, timelines, split text, marquees, magnetic buttons and real 3D depth. Tune every effect below, then copy the code or take the whole page.</p>
+      <p class="hero-lede">Des animations dignes d’un studio pour ton site. Tu choisis un effet, tu le règles à la souris, puis tu télécharges une page toute prête ou tu copies le code. Pas besoin de savoir coder.</p>
       <div class="hero-actions">
-        <a class="btn btn-solid" href="#studio" data-km-cursor="Go">Open the studio</a>
-        <a class="btn btn-line" href="#api" data-km-cursor="Read">Read the API</a>
+        <a class="btn btn-solid" href="#studio" data-km-cursor="Go">Essayer le studio</a>
+        <a class="btn btn-line" href="#comment">Comment ça marche</a>
       </div>
       <dl class="facts">
-        <div><dt>Size</dt><dd><span data-count="11">11</span> KB gzip</dd></div>
-        <div><dt>Dependencies</dt><dd><span data-count="0">0</span></dd></div>
-        <div><dt>Effects</dt><dd><span data-count="14">14</span></dd></div>
-        <div><dt>Tests</dt><dd><span data-count="24">24</span> passing</dd></div>
+        <div><dt>Effets</dt><dd><span data-count="15">15</span></dd></div>
+        <div><dt>Poids</dt><dd><span data-count="11">11</span> Ko</dd></div>
+        <div><dt>Dépendances</dt><dd><span data-count="0">0</span></dd></div>
+        <div><dt>Prix</dt><dd>Gratuit</dd></div>
       </dl>
     </div>
     <div class="hero-art" aria-hidden="true">
-      <div class="hero-ring" id="hero-ring">Kaury Motion · springs · timelines · 3D depth ·</div>
-      <div class="hero-logo" id="hero-logo"><svg class="k-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 232" role="img" aria-label="Kaury Studio logo"> <rect width="232" height="232" rx="52" fill="#F56E2E"/> <g transform="translate(16, 36)"> <path d="M199.75 142.65L184.57 113.36C183.98 112.21 182.83 111.54 181.64 111.54C181.21 111.54 180.76 111.62 180.33 111.82C167.47 117.53 155.41 120.43 144.5 120.43C130.22 121.08 107.65 116.91 100.07 103.4C93.61 91.88 98.16 72.67 110.11 63.56C121.25 55.06 135.98 53.37 149.31 55.8C150.65 56.04 152.02 56.36 153.12 57.19C156.61 59.86 154.58 67.37 152.39 70.19C150.1 73.14 146.16 75.07 141.58 75.47C140.99 75.53 140.39 75.55 139.79 75.55C138.9 75.55 138.01 75.49 137.12 75.38C134.18 75.01 131.18 74.21 128.2 73.15C128.2 73.15 121.95 105.27 144.43 109.01C182.18 115.29 191.09 78.25 191.25 77.69C191.49 76.6 197.12 50.93 183.28 32.79C174.73 21.59 160.8 15.91 141.87 15.91C141.11 15.91 140.35 15.91 139.56 15.94C90.98 17.09 58.95 53.7 46.2 71.53V3.44C46.2 1.54 44.71 0 42.88 0H3.32001C1.49001 0 0 1.54 0 3.44V156.98C0 158.87 1.48001 160.42 3.32001 160.42H41.11C42.57 160.42 43.86 159.43 44.28 157.97C45.57 153.61 45.76 132.1 45.76 119.53C45.76 117.16 48.74 116.24 49.97 118.23C59.67 133.88 87.12 166.81 143.66 160.42C172.89 157.11 197.32 147.91 198.33 147.38C199.14 146.96 199.73 146.22 200 145.34C200.27 144.46 200.19 143.49 199.76 142.67L199.75 142.65Z" fill="#F1E8CB"/> </g> </svg></div>
-    </div>
-  </header>
-
-  <div class="band" id="band" aria-label="Rise, marquee, ring, magnetic, tilt, extrude, scramble, counter, stagger, spring, timeline, scrub">
-    <span>Rise</span><i></i><span>Marquee</span><i></i><span>Ring</span><i></i><span>Magnetic</span><i></i><span>Tilt</span><i></i><span>Extrude</span><i></i><span>Scramble</span><i></i><span>Counter</span><i></i><span>Stagger</span><i></i><span>Spring</span><i></i><span>Timeline</span><i></i><span>Scrub</span><i></i>
-  </div>
-
-  <section class="studio" id="studio" aria-label="Motion studio">
-    <div class="studio-head">
-      <h2>The studio</h2>
-      <p>Pick an effect, move the sliders, watch it live. The code underneath always matches what you see.</p>
-    </div>
-    <div class="studio-grid">
-      <nav class="fx-list" id="fx-list" aria-label="Effects"></nav>
-      <div class="stage-wrap">
-        <div class="stage-bar">
-          <span class="stage-name" id="stage-name"></span>
-          <button class="chip" id="replay" type="button">Replay</button>
-        </div>
-        <div class="stage" id="stage"></div>
-        <p class="stage-hint" id="stage-hint"></p>
-      </div>
-      <form class="controls" id="controls" aria-label="Settings"></form>
-      <div class="export">
-        <div class="export-bar" role="tablist" aria-label="Code format">
-          <button type="button" role="tab" class="tab" data-tab="js" aria-selected="true">JavaScript</button>
-          <button type="button" role="tab" class="tab" data-tab="html" aria-selected="false">HTML only</button>
-          <button type="button" role="tab" class="tab" data-tab="file" aria-selected="false">Full page</button>
-          <span class="export-actions">
-            <button type="button" class="chip chip-accent" id="copy">Copy code</button>
-            <button type="button" class="chip" id="download">Download .html</button>
-          </span>
-        </div>
-        <pre class="code" id="code" tabindex="0"><code></code></pre>
-        <p class="export-note" id="export-note">“Full page” is a standalone file with the framework inside. It works offline, no install needed.</p>
-      </div>
+      <div class="hero-ring" id="hero-ring">Kaury Motion · animations · 3D · sans coder ·</div>
+      <div class="hero-logo" id="hero-logo"><svg class="k-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 232" role="img" aria-label="Logo Kaury Studio"> <rect width="232" height="232" rx="52" fill="#F56E2E"/> <g transform="translate(16, 36)"> <path d="M199.75 142.65L184.57 113.36C183.98 112.21 182.83 111.54 181.64 111.54C181.21 111.54 180.76 111.62 180.33 111.82C167.47 117.53 155.41 120.43 144.5 120.43C130.22 121.08 107.65 116.91 100.07 103.4C93.61 91.88 98.16 72.67 110.11 63.56C121.25 55.06 135.98 53.37 149.31 55.8C150.65 56.04 152.02 56.36 153.12 57.19C156.61 59.86 154.58 67.37 152.39 70.19C150.1 73.14 146.16 75.07 141.58 75.47C140.99 75.53 140.39 75.55 139.79 75.55C138.9 75.55 138.01 75.49 137.12 75.38C134.18 75.01 131.18 74.21 128.2 73.15C128.2 73.15 121.95 105.27 144.43 109.01C182.18 115.29 191.09 78.25 191.25 77.69C191.49 76.6 197.12 50.93 183.28 32.79C174.73 21.59 160.8 15.91 141.87 15.91C141.11 15.91 140.35 15.91 139.56 15.94C90.98 17.09 58.95 53.7 46.2 71.53V3.44C46.2 1.54 44.71 0 42.88 0H3.32001C1.49001 0 0 1.54 0 3.44V156.98C0 158.87 1.48001 160.42 3.32001 160.42H41.11C42.57 160.42 43.86 159.43 44.28 157.97C45.57 153.61 45.76 132.1 45.76 119.53C45.76 117.16 48.74 116.24 49.97 118.23C59.67 133.88 87.12 166.81 143.66 160.42C172.89 157.11 197.32 147.91 198.33 147.38C199.14 146.96 199.73 146.22 200 145.34C200.27 144.46 200.19 143.49 199.76 142.67L199.75 142.65Z" fill="#F1E8CB"/> </g> </svg></div>
     </div>
   </section>
 
-  <section class="api" id="api">
-    <div class="api-head">
-      <h2>The API in one screen</h2>
-      <p>Everything the studio does, you can write by hand. Import from the module or use the <code>KauryMotion</code> global from the script build.</p>
+  <div class="band" id="band" aria-label="Apparition, vague, décodage, compteur, bandeau, badge, aimant, carte 3D, logo 3D, séquence, ressort">
+    <span>Apparition</span><i></i><span>Vague</span><i></i><span>Décodage</span><i></i><span>Compteur</span><i></i><span>Bandeau</span><i></i><span>Badge</span><i></i><span>Aimant</span><i></i><span>Carte 3D</span><i></i><span>Logo 3D</span><i></i><span>Séquence</span><i></i><span>Ressort</span><i></i>
+  </div>
+
+  <section class="how" id="comment" aria-labelledby="how-title">
+    <h2 id="how-title">Comment ça marche</h2>
+    <ol class="steps">
+      <li><b>Choisis un effet</b><p>Dans la liste du studio, chaque effet dit à quoi il sert : un titre, un bouton, un logo…</p></li>
+      <li><b>Règle-le</b><p>Pars d’un style prêt en un clic, puis change le texte, les couleurs et la vitesse. L’aperçu bouge en direct.</p></li>
+      <li><b>Récupère-le</b><p>Télécharge une page toute prête ou copie le code dans ton site. Aucun compte, aucune installation.</p></li>
+    </ol>
+  </section>
+
+  <section class="studio" id="studio" aria-labelledby="studio-title">
+    <div class="studio-head">
+      <h2 id="studio-title">Le studio</h2>
+      <p>Clique sur un effet à gauche. Tout ce que tu changes à droite se voit tout de suite dans l’aperçu.</p>
     </div>
-    <div class="api-grid">
-      <article><h3>animate</h3><p>CSS, transforms, SVG attributes, CSS variables or plain objects. Colours and units blend.</p><pre><code>animate('.card', {
+    <div class="studio-grid">
+      <nav class="fx-list" id="fx-list" aria-label="Effets"></nav>
+
+      <div class="stage-wrap">
+        <div class="stage-bar">
+          <div class="stage-title">
+            <h3 id="stage-name"></h3>
+            <p id="stage-use"></p>
+          </div>
+          <div class="stage-actions">
+            <button class="chip" id="replay" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5"/></svg>Rejouer</button>
+            <button class="chip chip-accent" id="surprise" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="15" r="1.2"/><circle cx="15" cy="9" r="1.2"/><circle cx="9" cy="15" r="1.2"/></svg>Surprise</button>
+          </div>
+        </div>
+        <div class="stage" id="stage"></div>
+      </div>
+
+      <aside class="panel" aria-label="Réglages">
+        <div class="panel-block">
+          <p class="panel-label">Styles prêts</p>
+          <div class="presets" id="presets"></div>
+        </div>
+        <form class="controls" id="controls"></form>
+      </aside>
+
+      <section class="get" aria-labelledby="get-title">
+        <div class="get-head">
+          <h3 id="get-title">Récupérer l’animation</h3>
+          <p>Choisis comment tu veux l’utiliser.</p>
+        </div>
+        <div class="get-options" role="tablist" aria-label="Façon de récupérer l’animation">
+          <button type="button" role="tab" class="opt" data-tab="file" aria-selected="true">
+            <span class="opt-badge">Le plus simple</span>
+            <b>Page prête à l’emploi</b>
+            <span>Un fichier .html complet qui marche tout seul.</span>
+          </button>
+          <button type="button" role="tab" class="opt" data-tab="html" aria-selected="false">
+            <b>Ajouter à mon site</b>
+            <span>Un bloc à coller dans WordPress, Webflow, Wix ou ton HTML.</span>
+          </button>
+          <button type="button" role="tab" class="opt" data-tab="js" aria-selected="false">
+            <b>Module JavaScript</b>
+            <span>Pour les développeurs : Vite, Astro, React…</span>
+          </button>
+        </div>
+        <div class="get-body">
+          <ol class="get-steps" id="get-steps"></ol>
+          <div class="get-actions">
+            <button type="button" class="btn btn-solid btn-sm" id="download">Télécharger la page</button>
+            <button type="button" class="btn btn-line btn-sm" id="copy">Copier le code</button>
+            <span class="get-status" id="get-status" role="status" aria-live="polite"></span>
+          </div>
+        </div>
+        <details class="code-wrap" id="code-wrap">
+          <summary>Voir le code</summary>
+          <pre class="code" id="code" tabindex="0"><code></code></pre>
+        </details>
+      </section>
+    </div>
+  </section>
+
+  <section class="dev" id="dev" aria-labelledby="dev-title">
+    <div class="dev-head">
+      <h2 id="dev-title">Pour les développeurs</h2>
+      <p>Tout ce que fait le studio s’écrit aussi à la main. Le framework pèse 11 Ko, n’a aucune dépendance et respecte le réglage « réduire les animations » du système.</p>
+    </div>
+    <details class="dev-details">
+      <summary>Voir la documentation rapide</summary>
+      <div class="api-grid">
+        <article><h3>animate</h3><p>Anime le CSS, les transformations, le SVG, les variables CSS ou un objet. Les couleurs et les unités se mélangent.</p><pre><code>animate('.card', {
   y: [60, 0],
   opacity: [0, 1],
   backgroundColor: '#F56E2E',
 }, { delay: stagger(80), ease: 'kaury' })</code></pre></article>
-      <article><h3>spring</h3><p>Real damped springs. Duration comes from the physics.</p><pre><code>animate('.pill', { scale: [0.6, 1] }, {
+        <article><h3>spring</h3><p>De vrais ressorts physiques. La durée découle de la physique.</p><pre><code>animate('.pill', { scale: [0.6, 1] }, {
   ease: spring({ stiffness: 220, damping: 12 }),
 })</code></pre></article>
-      <article><h3>timeline</h3><p>Sequence anything. Positions like <code>'-=200'</code> or <code>'&lt;'</code> overlap steps.</p><pre><code>timeline({ defaults: { ease: 'kaury' } })
+        <article><h3>timeline</h3><p>Enchaîne des étapes. <code>'-=200'</code> ou <code>'&lt;'</code> les font se chevaucher.</p><pre><code>timeline({ defaults: { ease: 'kaury' } })
   .add('.logo', { scale: [0, 1] })
   .add('.title', { y: ['110%', '0%'] }, {}, '-=500')
   .add('.cta', { opacity: [0, 1] }, {}, '&lt;')</code></pre></article>
-      <article><h3>stagger</h3><p>From first, last, center, edges or random. Works in 2D grids.</p><pre><code>animate('.dot', { scale: [0, 1] }, {
+        <article><h3>stagger</h3><p>Décale chaque élément : depuis le début, la fin, le centre, les bords, au hasard, en grille.</p><pre><code>animate('.dot', { scale: [0, 1] }, {
   delay: stagger(40, { grid: [12, 8], from: 'center' }),
 })</code></pre></article>
-      <article><h3>Text</h3><p>Split into chars, words or lines, with an accessible label kept.</p><pre><code>reveal('h1', { effect: 'rise', by: 'chars' })
+        <article><h3>Texte</h3><p>Découpe en lettres, mots ou lignes en gardant le texte lisible par les lecteurs d’écran.</p><pre><code>reveal('h1', { effect: 'rise', by: 'chars' })
+wave('.slogan', { amplitude: 12 })
 scramble('.code', { text: 'KAURY' })
 counter('.stat', { to: 12500, suffix: '+' })</code></pre></article>
-      <article><h3>Pointer, scroll, depth</h3><p>Ongoing effects return a function that stops them.</p><pre><code>magnetic('.btn', { strength: 0.4 })
+        <article><h3>Souris, scroll, 3D</h3><p>Les effets continus renvoient une fonction qui les arrête.</p><pre><code>magnetic('.btn', { strength: 0.4 })
 tilt('.card', { max: 14, glare: true })
 extrude('.logo', { depth: 40 })
 scrub(timeline, { trigger: '.section' })</code></pre></article>
-      <article class="wide"><h3>No JavaScript at all</h3><p>Add the script with <code>data-auto</code> and write attributes. Effects combine with spaces.</p><pre><code>&lt;script src="kaury-motion.min.js" data-auto&gt;&lt;/script&gt;
+        <article class="wide"><h3>Sans JavaScript</h3><p>Ajoute le script avec <code>data-auto</code> et écris des attributs. Les effets se combinent avec des espaces.</p><pre><code>&lt;script src="kaury-motion.min.js" data-auto&gt;&lt;/script&gt;
 
-&lt;h1 data-km="rise" data-km-by="chars"&gt;Give brands character&lt;/h1&gt;
+&lt;h1 data-km="rise" data-km-by="chars"&gt;Donne du caractère&lt;/h1&gt;
+&lt;p data-km="wave"&gt;Toujours en mouvement&lt;/p&gt;
 &lt;div data-km="marquee" data-km-speed="120" data-km-scroll-boost="1"&gt;…&lt;/div&gt;
 &lt;div data-km="extrude tilt float" data-km-depth="40"&gt;&lt;svg&gt;…&lt;/svg&gt;&lt;/div&gt;</code></pre></article>
-    </div>
+      </div>
+    </details>
   </section>
 
   <footer class="foot">
-    <p>Kaury Motion is made by <a href="https://kaury.studio">Kaury Studio</a>, Vevey. MIT licence. Respects “reduce motion” automatically.</p>
-    <label class="toggle"><input type="checkbox" id="cursor-toggle" checked> Custom cursor</label>
+    <p>Kaury Motion est fait par <a href="https://kaury.studio">Kaury Studio</a>, à Vevey. Licence MIT, libre d’utilisation.</p>
+    <label class="toggle"><input type="checkbox" id="cursor-toggle" checked> Curseur personnalisé</label>
   </footer>
 </div>
 
