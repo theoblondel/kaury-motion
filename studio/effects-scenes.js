@@ -199,8 +199,8 @@
     {
       id: 'logo-slogan', cat: Q, name: 'Logo puis slogan', use: 'Le logo arrive, puis le nom et le slogan, puis un trait.',
       replay: 6000,
-      controls: [K.text('Kaury Studio', 'Nom'), K.text('Des marques impossibles à confondre', 'Slogan', 'tagline'), K.color('#F1E8CB'), K.color('#F56E2E', 'Couleur du trait', 'line'), K.speed(1)],
-      html: (o) => `<div class="x-ls"><div class="x-ls-logo">${K.LOGO}</div><h1>${e(o.text)}</h1><i></i><p>${e(o.tagline)}</p></div>`,
+      controls: [K.image(), K.text('Kaury Studio', 'Nom'), K.text('Des marques impossibles à confondre', 'Slogan', 'tagline'), K.color('#F1E8CB'), K.color('#F56E2E', 'Couleur du trait', 'line'), K.speed(1)],
+      html: (o) => `<div class="x-ls"><div class="x-ls-logo">${K.logo(o)}</div><h1>${e(o.text)}</h1><i></i><p>${e(o.tagline)}</p></div>`,
       css: (o) => `.x-ls { display: grid; justify-items: center; gap: 16px; text-align: center; color: ${o.color}; }
 .x-ls-logo { width: 100px; } .x-ls-logo svg { display: block; width: 100%; height: auto; }
 .x-ls h1 { margin: 0; font: 800 64px/1 var(--display); letter-spacing: -0.03em; overflow: hidden; padding-bottom: .08em; }

@@ -168,6 +168,7 @@ body { margin: 0; min-height: 100vh; display: grid; place-items: center; overflo
       id: 'ring', group: 'Défilement', name: 'Badge rotatif', use: 'Pour un badge « Disponible » ou autour de ton logo.',
       tip: 'Fais défiler la page pour le faire tourner plus vite',
       controls: [
+        window.KMS.image(),
         { k: 'text', type: 'text', label: 'Ton texte', help: 'Termine par « · » pour que la boucle se raccorde bien.', def: 'Kaury Studio · Vevey · Suisse ·' },
         { k: 'radius', type: 'range', label: 'Taille du cercle', min: 60, max: 220, step: 1, def: 150, unit: 'px' },
         { k: 'fontSize', type: 'range', label: 'Taille du texte', min: 10, max: 32, step: 1, def: 17, unit: 'px' },
@@ -181,7 +182,7 @@ body { margin: 0; min-height: 100vh; display: grid; place-items: center; overflo
         ['Grand anneau', { radius: 200, fontSize: 20, speed: 12, logo: true }],
         ['Sens inverse', { speed: -60, scrollBoost: 2 }],
       ],
-      html: (o) => `<div class="km-ring-wrap">\n  <div class="km-ring">${esc(o.text)}</div>${o.logo ? `\n  <div class="km-ring-logo">${LOGO}</div>` : ''}\n</div>`,
+      html: (o) => `<div class="km-ring-wrap">\n  <div class="km-ring">${esc(o.text)}</div>${o.logo ? `\n  <div class="km-ring-logo">${window.KMS.logo(o)}</div>` : ''}\n</div>`,
       css: (o) => `.km-ring-wrap { position: relative; display: grid; place-items: center; color: ${o.color}; font-family: var(--text); }
 .km-ring-wrap > * { grid-area: 1 / 1; }
 .km-ring-logo { width: ${Math.round(o.radius * 0.9)}px; }
@@ -286,6 +287,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
       tip: 'Il se balance tout seul. Survole-le pour le tourner',
       tipTouch: 'Il se balance tout seul',
       controls: [
+        window.KMS.image(),
         { k: 'depth', type: 'range', label: 'Épaisseur', min: 0, max: 120, step: 1, def: 44, unit: 'px' },
         { k: 'layers', type: 'range', label: 'Finesse', help: 'Plus de tranches = côtés plus lisses.', min: 2, max: 40, step: 1, def: 24 },
         { k: 'shade', type: 'range', label: 'Ombre sur les côtés', min: 0, max: 0.9, step: 0.05, def: 0.5 },
@@ -299,7 +301,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
         ['Fin et élégant', { depth: 16, layers: 10, shade: 0.35, sway: 18 }],
         ['Immobile', { depth: 44, sway: 28, float: false, tilt: true }],
       ],
-      html: () => `<div class="km-scene">\n  <div class="km-logo">${LOGO}</div>\n</div>`,
+      html: (o) => `<div class="km-scene">\n  <div class="km-logo">${window.KMS.logo(o)}</div>\n</div>`,
       css: () => `.km-scene { display: grid; place-items: center; padding: 60px; perspective: 900px; }
 .km-logo { width: min(240px, 50vw); }
 .km-logo svg { display: block; width: 100%; height: auto; }`,
@@ -315,6 +317,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
       id: 'timeline', group: 'Intros et séquences', name: 'Séquence d’intro', use: 'Logo, titre puis bouton : une ouverture de page en trois temps.',
       tip: null,
       controls: [
+        window.KMS.image(),
         { k: 'title', type: 'text', label: 'Titre', def: 'Des animations avec du caractère' },
         { k: 'overlap', type: 'range', label: 'Enchaînement', help: 'Plus c’est grand, plus les étapes se chevauchent.', min: 0, max: 900, step: 25, def: 500, unit: 'ms' },
         { k: 'speed', type: 'range', label: 'Vitesse globale', min: 0.25, max: 3, step: 0.05, def: 1, unit: '×' },
@@ -326,7 +329,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
         ['Fluide', { overlap: 500, speed: 1, ease: 'kaury' }],
         ['Explosif', { overlap: 800, speed: 1.6, ease: 'outBack' }],
       ],
-      html: (o) => `<div class="km-tl">\n  <div class="km-tl-logo">${LOGO}</div>\n  <h2>${o.title.split(/\s+/).filter(Boolean).map((w) => `<span>${esc(w)}</span>`).join(' ')}</h2>\n  <span class="km-tl-pill">kaury.studio →</span>\n</div>`,
+      html: (o) => `<div class="km-tl">\n  <div class="km-tl-logo">${window.KMS.logo(o)}</div>\n  <h2>${o.title.split(/\s+/).filter(Boolean).map((w) => `<span>${esc(w)}</span>`).join(' ')}</h2>\n  <span class="km-tl-pill">kaury.studio →</span>\n</div>`,
       css: () => `.km-tl { display: grid; justify-items: center; gap: 22px; text-align: center; }
 .km-tl-logo { width: 110px; }
 .km-tl-logo svg { display: block; width: 100%; height: auto; }
@@ -409,12 +412,12 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     scramble: ['text', 'pool', 'color'],
     counter: ['to', 'prefix', 'suffix', 'color'],
     marquee: ['words', 'speed', 'bg', 'color'],
-    ring: ['text', 'speed', 'logo', 'color'],
+    ring: ['text', 'image', 'speed', 'logo', 'color'],
     stagger: ['from', 'look', 'each'],
     magnetic: ['label', 'strength', 'bg'],
     tilt: ['title', 'max', 'glare', 'bg'],
-    extrude: ['depth', 'sway', 'tilt'],
-    timeline: ['title', 'overlap', 'loop'],
+    extrude: ['image', 'depth', 'sway', 'tilt'],
+    timeline: ['title', 'image', 'overlap', 'loop'],
     spring: ['mass', 'stiffness', 'damping'],
   };
   // Effets qui se jouent une fois : les vignettes les rejouent en boucle.
@@ -661,9 +664,10 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     if (c.type === 'text') field = `<input type="text" id="${id}" data-k="${c.k}" value="${esc(v)}" autocomplete="off" spellcheck="false"${described}>`;
     if (c.type === 'select') field = `<select id="${id}" data-k="${c.k}"${described}>${opts(c).map(([val, lab]) => `<option value="${esc(val)}"${val === v ? ' selected' : ''}>${lab}</option>`).join('')}</select>`;
     if (c.type === 'seg') field = `<div class="seg" role="group" aria-labelledby="${id}-l">${opts(c).map(([val, lab]) => `<button type="button" data-k="${c.k}" data-v="${esc(val)}" aria-pressed="${val === v}">${lab}</button>`).join('')}</div>`;
+    if (c.type === 'image') field = `<div class="img-pick">${v ? `<img src="${v}" alt="">` : '<span class="img-none">Logo Kaury</span>'}<label class="chip" for="${id}">${v ? 'Changer' : 'Choisir une image'}</label><input type="file" id="${id}" data-k="${c.k}" accept="image/*" class="sr-only"${described}>${v ? `<button type="button" class="reset" data-clear="${c.k}">Retirer</button>` : ''}</div>`;
     if (c.type === 'color') field = `<div class="swatches" role="group" aria-labelledby="${id}-l">${PALETTE.map((p) => `<button type="button" class="swatch" data-k="${c.k}" data-v="${p}" style="background:${p}" aria-label="${p}" aria-pressed="${p.toLowerCase() === String(v).toLowerCase()}"></button>`).join('')}<input type="color" id="${id}" data-k="${c.k}" value="${v}" aria-label="Autre couleur"></div>`;
     const out = c.type === 'range' ? `<output id="${id}-o">${fmt(v, c)}</output>` : '';
-    const lab = c.type === 'seg' || c.type === 'color' ? `<span class="lbl" id="${id}-l">${c.label}</span>` : `<label for="${id}">${c.label}</label>`;
+    const lab = c.type === 'seg' || c.type === 'color' || c.type === 'image' ? `<span class="lbl" id="${id}-l">${c.label}</span>` : `<label for="${id}">${c.label}</label>`;
     return `<div class="ctl"><div class="ctl-head">${lab}${out}</div>${field}${help}</div>`;
   }
   let advOpen = false;
@@ -695,9 +699,42 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     clearTimeout(debounce);
     debounce = setTimeout(mount, instant ? 0 : 160);
   }
+  // Image perso : réduite à 900 px max (sauf SVG) pour garder un export léger.
+  function readImage(file) {
+    return new Promise((ok, fail) => {
+      const r = new FileReader();
+      r.onerror = fail;
+      r.onload = () => {
+        if (file.type === 'image/svg+xml') return ok(r.result);
+        const img = new Image();
+        img.onload = () => {
+          const k = Math.min(1, 900 / Math.max(img.width, img.height));
+          const cv = document.createElement('canvas');
+          cv.width = Math.round(img.width * k);
+          cv.height = Math.round(img.height * k);
+          cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+          ok(cv.toDataURL(file.type === 'image/jpeg' ? 'image/jpeg' : 'image/png', 0.9));
+        };
+        img.onerror = fail;
+        img.src = r.result;
+      };
+      r.readAsDataURL(file);
+    });
+  }
+  $('#controls').addEventListener('change', async (e) => {
+    const t = e.target;
+    if (t.type !== 'file' || !t.files[0]) return;
+    try {
+      values[current.id][t.dataset.k] = await readImage(t.files[0]);
+      renderControls();
+      mount();
+    } catch {
+      status('Cette image n’a pas pu être lue. Essaie un PNG ou un JPG.');
+    }
+  });
   $('#controls').addEventListener('input', (e) => {
     const t = e.target;
-    if (!t.dataset.k) return;
+    if (!t.dataset.k || t.type === 'file') return;
     change(t.dataset.k, t.type === 'checkbox' ? t.checked : t.value, t.type === 'checkbox' || t.tagName === 'SELECT');
   });
   $('#controls').addEventListener('click', (e) => {
@@ -709,13 +746,18 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
       renderPresets(-1);
       return mount();
     }
+    if (b.dataset.clear) {
+      values[current.id][b.dataset.clear] = '';
+      renderControls();
+      return mount();
+    }
     if (b.dataset.v === undefined) return;
     if (!b.classList.contains('swatch')) b.parentElement.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
     change(b.dataset.k, b.dataset.v, true);
   });
   $('#controls').addEventListener('submit', (e) => e.preventDefault());
   // Les styles et la surprise gardent les textes que la personne a tapés.
-  const keepTexts = () => Object.fromEntries(current.controls.filter((c) => c.type === 'text').map((c) => [c.k, values[current.id][c.k]]));
+  const keepTexts = () => Object.fromEntries(current.controls.filter((c) => c.type === 'text' || c.type === 'image').map((c) => [c.k, values[current.id][c.k]]));
   $('#presets').addEventListener('click', (e) => {
     const b = e.target.closest('.preset');
     if (!b) return;
@@ -812,6 +854,58 @@ ${jsBody(fx, o)}
 </body>
 </html>
 `;
+  // ---------- ma page : plusieurs effets, un seul export ----------
+  function rawBody(fx) {
+    const src = fx.code.toString();
+    const lines = src.slice(src.indexOf('{') + 1, src.lastIndexOf('}')).replace(/^\s*\n/, '').replace(/\s+$/, '').split('\n');
+    const ind = Math.min(...lines.filter((l) => l.trim()).map((l) => l.match(/^ */)[0].length));
+    return lines.map((l) => l.slice(ind)).join('\n');
+  }
+  const indent = (txt, pad = '  ') => txt.split('\n').map((l) => (l ? pad + l : l)).join('\n');
+  function sectionJs(fx, o, id) {
+    const el = `document.getElementById('${id}')`;
+    if (fx.code) return `// ${fx.name}\n(function (root, o) {\n${indent(rawBody(fx))}\n})(${el}, ${lit(o)});`;
+    const names = usedNames(fx, o).join(', ');
+    if (fx.script) return `// ${fx.name}\n(function (root) {\n  const { ${names} } = KM;\n${indent(fx.script(o).replace(/document\.querySelectorAll/g, 'root.querySelectorAll'))}\n})(${el});`;
+    const scopeSel = (a) => (typeof a === 'string' && /^[.#]/.test(a) ? C(`root.querySelectorAll('${a}')`, null) : a);
+    const calls = fx.calls(o).map((c) => {
+      let line = `${c.fn}(${c.args.map((a) => lit(scopeSel(a), '  ')).join(', ')})`;
+      for (const [m, ...args] of c.chain || []) line += `\n  .${m}(${args.map((a) => lit(scopeSel(a), '  ')).join(', ')})`;
+      return line;
+    }).join('\n');
+    return `// ${fx.name}\n(function (root) {\n  const { ${names} } = KM;\n${indent(calls)}\n})(${el});`;
+  }
+  function combinedPage(items, lib) {
+    const secs = items.map((it, i) => ({ fx: FX.find((f) => f.id === it.id), o: it.o, id: `km-s${i + 1}` })).filter((x) => x.fx);
+    return `<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ma page · Kaury Motion</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,700&f[]=satoshi@500,700&display=swap">
+<style>
+:root { --display: 'Cabinet Grotesk', 'Arial Black', sans-serif; --text: 'Satoshi', 'Helvetica Neue', Arial, sans-serif; --mono: ui-monospace, Menlo, monospace; }
+body { margin: 0; overflow-x: hidden; background: #1C1A1A; color: #F1E8CB; font-family: var(--text); }
+.km-sec { position: relative; min-height: 100vh; display: grid; place-items: center; overflow: hidden; }
+.km-sec + .km-sec { border-top: 1px solid rgba(241, 232, 203, 0.08); }
+${secs.map((x) => `/* ${x.fx.name} */\n${scopeCss(x.fx.css(x.o), '#' + x.id)}`).join('\n')}
+</style>
+</head>
+<body>
+${secs.map((x) => `<section class="km-sec" id="${x.id}">\n${x.fx.html(x.o)}\n</section>`).join('\n\n')}
+
+<script>${lib}</script>
+<script>
+const KM = KauryMotion;
+
+${secs.map((x) => sectionJs(x.fx, x.o, x.id)).join('\n\n')}
+</script>
+</body>
+</html>
+`;
+  }
+
   async function codeFor(t, forDisplay) {
     const o = values[current.id];
     if (t === 'js') return jsModule(current, o);
@@ -917,6 +1011,73 @@ ${jsBody(fx, o)}
     a.remove();
     status('Téléchargement lancé. Ouvre le fichier dans ton navigateur.');
   });
+
+  // ---------- ma page (panier) ----------
+  let cart = [];
+  try { cart = JSON.parse(store.get('km-cart') || '[]').filter((it) => FX.some((f) => f.id === it.id)); } catch { cart = []; }
+  const saveCart = () => store.set('km-cart', JSON.stringify(cart));
+  function renderCart() {
+    $('#cart-count').textContent = cart.length;
+    $('#cart-fab').hidden = !cart.length;
+    $('#cart-empty').hidden = cart.length > 0;
+    ['#cart-download', '#cart-copy', '#cart-clear'].forEach((sel) => ($(sel).disabled = !cart.length));
+    $('#cart-list').innerHTML = cart.map((it, i) => {
+      const fx = FX.find((f) => f.id === it.id);
+      return `<li><div><b>${fx.name}</b><small>${fx.group}</small></div><div class="row-actions">
+        <button type="button" data-move="-1" data-i="${i}" aria-label="Monter" ${i === 0 ? 'disabled' : ''}>↑</button>
+        <button type="button" data-move="1" data-i="${i}" aria-label="Descendre" ${i === cart.length - 1 ? 'disabled' : ''}>↓</button>
+        <button type="button" data-remove="${i}" aria-label="Retirer">✕</button></div></li>`;
+    }).join('');
+  }
+  $('#add-cart').addEventListener('click', () => {
+    cart.push({ id: current.id, o: JSON.parse(JSON.stringify(values[current.id])) });
+    saveCart();
+    renderCart();
+    status(`Ajouté à ta page (${cart.length} effet${cart.length > 1 ? 's' : ''}). Retrouve-la avec le bouton « Ma page ».`);
+    KM.animate('#cart-fab', { scale: [1.25, 1] }, { ease: KM.spring({ stiffness: 300, damping: 10 }) });
+  });
+  const openCart = () => { $('#cart').hidden = false; $('#cart-close').focus(); };
+  const closeCart = () => { $('#cart').hidden = true; $('#cart-fab').focus(); };
+  $('#cart-fab').addEventListener('click', openCart);
+  $('#cart-close').addEventListener('click', closeCart);
+  $('#cart').addEventListener('click', (e) => {
+    if (e.target === $('#cart')) return closeCart();
+    const b = e.target.closest('button');
+    if (!b) return;
+    if (b.dataset.move) {
+      const i = +b.dataset.i, j = i + +b.dataset.move;
+      [cart[i], cart[j]] = [cart[j], cart[i]];
+    } else if (b.dataset.remove !== undefined) cart.splice(+b.dataset.remove, 1);
+    else return;
+    saveCart();
+    renderCart();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#cart').hidden) closeCart(); });
+  let cartTimer;
+  const cartStatus = (t) => { $('#cart-status').textContent = t; clearTimeout(cartTimer); cartTimer = setTimeout(() => ($('#cart-status').textContent = ''), 3500); };
+  $('#cart-clear').addEventListener('click', () => { cart = []; saveCart(); renderCart(); });
+  $('#cart-copy').addEventListener('click', async () => {
+    const html = combinedPage(cart, await libSource());
+    try { await navigator.clipboard.writeText(html); cartStatus('Code copié : colle-le dans un fichier ma-page.html.'); }
+    catch { cartStatus('Copie impossible ici : utilise « Télécharger ma page ».'); }
+  });
+  $('#cart-download').addEventListener('click', async () => {
+    const html = combinedPage(cart, await libSource());
+    const d = await downloads;
+    if (d) {
+      try { await d.save({ filename: 'ma-page-kaury-motion.html', data: html }); cartStatus('Page enregistrée.'); }
+      catch (err) { cartStatus(err && err.code === 'declined' ? 'Téléchargement annulé.' : 'Téléchargement impossible ici : utilise « Copier le code ».'); }
+      return;
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+    a.download = 'ma-page-kaury-motion.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    cartStatus('Téléchargement lancé.');
+  });
+  renderCart();
 
   // ---------- hero ----------
   function hero() {

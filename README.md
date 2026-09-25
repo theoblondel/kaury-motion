@@ -1,6 +1,12 @@
 # Kaury Motion
 
+[![Tests](https://github.com/theoblondel/kaury-motion/actions/workflows/ci.yml/badge.svg)](https://github.com/theoblondel/kaury-motion/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/kaury-motion?color=F56E2E)](https://www.npmjs.com/package/kaury-motion)
+[![Licence MIT](https://img.shields.io/badge/licence-MIT-1C1A1A)](LICENSE)
+
 Spectacular web animation in one small file, by [Kaury Studio](https://kaury.studio).
+
+**[Open the studio →](https://theoblondel.github.io/kaury-motion/)** 119 effects you can tune live and take away as code or as a ready-made page.
 
 A zero-dependency motion framework: a tween engine with real springs, timelines and staggers, plus ready-made effects (split-text reveals, marquees, text rings, magnetic buttons, 3D tilt, 3D extrusion, scramble, counters, scroll-linked animation) and a visual **studio** where you tune every effect and export the code.
 
@@ -19,7 +25,23 @@ npm run build
 npx serve .        # then open http://localhost:3000/studio/
 ```
 
+Studio features:
+
+- **119 effects in 10 categories**: full pages (launch, coming soon, portfolio), text, buttons, cards and 3D, scrolling, animated backgrounds, loaders, micro-interactions, SVG shapes, intros
+- **Ready-made styles** and a *Surprise* button for every effect
+- **Your own image** (logo or photo) in the logo-based effects
+- **“Ma page”**: collect several effects and export them as one page, one section per effect
+- Three exports: standalone page (framework inlined, works offline), a self-contained block for WordPress / Webflow / Wix, or an ES module snippet with the settings at the top
+
 `node studio/bundle.mjs out.html` builds the studio as one self-contained file.
+
+## Install
+
+```bash
+npm install kaury-motion
+```
+
+Or drop `dist/kaury-motion.min.js` into your page (it exposes `KauryMotion`).
 
 ## Quick start
 
@@ -79,10 +101,13 @@ Ongoing effects return a function (or `{ destroy }`) that stops them.
 ## Development
 
 ```bash
-npm test          # vitest + jsdom
+npm test          # 26 unit tests (vitest + jsdom)
 npm run typecheck
 npm run build     # dist/kaury-motion.js (ESM), dist/kaury-motion.min.js (script), dist/types
+npm run test:e2e  # opens every studio effect, runs every exported page, the cart, custom images and mobile
 ```
+
+GitHub Actions runs all of it on every push (`.github/workflows/ci.yml`), deploys the studio to GitHub Pages from `main` (`pages.yml`) and publishes to npm on each release (`publish.yml`). Setup steps, in French: [MISE-EN-LIGNE.md](MISE-EN-LIGNE.md).
 
 ## Licence
 

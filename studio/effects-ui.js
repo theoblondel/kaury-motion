@@ -553,11 +553,11 @@ ${btnCss('.x-btn', o, 'overflow: visible;')}
     },
     {
       id: 'logo-load', cat: L, name: 'Logo qui se remplit', use: 'Ton logo se remplit de couleur comme une jauge.',
-      controls: [K.range('size', 'Taille du logo', 80, 300, 2, 180, 'px'), K.range('duration', 'Durée', 800, 5000, 100, 2200, 'ms'), K.ease('inOutQuart')],
-      html: () => `<div class="x-lload"><div class="x-ghost">${K.LOGO}</div><div class="x-full">${K.LOGO}</div></div>`,
+      controls: [K.image(), K.range('size', 'Taille du logo', 80, 300, 2, 180, 'px'), K.range('duration', 'Durée', 800, 5000, 100, 2200, 'ms'), K.ease('inOutQuart')],
+      html: (o) => `<div class="x-lload"><div class="x-ghost">${K.logo(o)}</div><div class="x-full">${K.logo(o)}</div></div>`,
       css: (o) => `.x-lload { position: relative; width: ${o.size}px; height: ${o.size}px; }
 .x-lload > div { position: absolute; inset: 0; }
-.x-lload svg { width: 100%; height: 100%; display: block; }
+.x-lload svg, .x-lload img { width: 100%; height: 100%; display: block; object-fit: contain; }
 .x-ghost { opacity: .18; filter: grayscale(1); }
 .x-full { clip-path: inset(100% 0 0 0); }`,
       code(root, o, KM) {

@@ -24,10 +24,13 @@
   const kit = {
     list: [],
     EASES,
-    CATS: ['Titres et texte', 'Boutons', 'Cartes et 3D', 'Défilement', 'Fonds animés', 'Chargements', 'Micro-interactions', 'Formes et SVG', 'Intros et séquences'],
+    CATS: ['Pages complètes', 'Titres et texte', 'Boutons', 'Cartes et 3D', 'Défilement', 'Fonds animés', 'Chargements', 'Micro-interactions', 'Formes et SVG', 'Intros et séquences'],
     add(...fx) { kit.list.push(...fx); },
     // Le logo Kaury (celui de l'en-tête de la page), pour les effets qui en ont besoin
     LOGO: (document.querySelector('#hero-logo svg')?.outerHTML || '').replace(' class="k-logo"', ''),
+    // Ton logo ou une photo à la place du logo Kaury (vide = logo Kaury)
+    image: (label = 'Ton image (logo, photo…)') => ({ k: 'image', type: 'image', label, def: '', help: 'PNG, JPG ou SVG. Sans image, le logo Kaury est utilisé.' }),
+    logo: (o) => (o && o.image ? `<img src="${o.image}" alt="" style="display:block;width:100%;height:auto">` : kit.LOGO),
     // Réglages prêts à l'emploi
     text: (def, label = 'Ton texte', k = 'text', help) => ({ k, type: 'text', label, def, help }),
     color: (def, label = 'Couleur', k = 'color') => ({ k, type: 'color', label, def }),

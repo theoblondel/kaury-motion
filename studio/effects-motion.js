@@ -168,8 +168,8 @@ ${sel} small { font: 700 11px/1 var(--text); letter-spacing: .16em; text-transfo
     },
     {
       id: 'float-logo', cat: C, name: 'Logo qui lévite', use: 'Ton logo flotte doucement avec son ombre au sol.',
-      controls: [K.range('y', 'Hauteur de flottement', 4, 60, 1, 20, 'px'), K.range('rotate', 'Balancement', 0, 20, 1, 5, '°'), K.range('duration', 'Durée d’un cycle', 1500, 8000, 100, 3600, 'ms'), K.range('size', 'Taille', 80, 300, 2, 170, 'px')],
-      html: () => `<div class="x-lev"><div class="x-lev-logo">${K.LOGO}</div><i class="x-lev-shadow"></i></div>`,
+      controls: [K.image(), K.range('y', 'Hauteur de flottement', 4, 60, 1, 20, 'px'), K.range('rotate', 'Balancement', 0, 20, 1, 5, '°'), K.range('duration', 'Durée d’un cycle', 1500, 8000, 100, 3600, 'ms'), K.range('size', 'Taille', 80, 300, 2, 170, 'px')],
+      html: (o) => `<div class="x-lev"><div class="x-lev-logo">${K.logo(o)}</div><i class="x-lev-shadow"></i></div>`,
       css: (o) => `.x-lev { display: grid; justify-items: center; gap: 30px; }
 .x-lev-logo { width: ${o.size}px; } .x-lev-logo svg { display: block; width: 100%; height: auto; }
 .x-lev-shadow { width: ${o.size * 0.8}px; height: 18px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.55), transparent); }`,
@@ -182,8 +182,8 @@ ${sel} small { font: 700 11px/1 var(--text); letter-spacing: .16em; text-transfo
     },
     {
       id: 'coin', cat: C, name: 'Pièce qui tourne', use: 'Ton logo devient une pièce épaisse qui tourne sur elle-même.',
-      controls: [K.range('depth', 'Épaisseur', 4, 60, 1, 24, 'px'), K.speed(1), K.range('size', 'Taille', 80, 300, 2, 180, 'px')],
-      html: () => `<div class="x-coin-scene"><div class="x-coin">${K.LOGO}</div></div>`,
+      controls: [K.image(), K.range('depth', 'Épaisseur', 4, 60, 1, 24, 'px'), K.speed(1), K.range('size', 'Taille', 80, 300, 2, 180, 'px')],
+      html: (o) => `<div class="x-coin-scene"><div class="x-coin">${K.logo(o)}</div></div>`,
       css: (o) => `.x-coin-scene { perspective: 900px; }
 .x-coin { width: ${o.size}px; } .x-coin svg { display: block; width: 100%; height: auto; }`,
       code(root, o, KM) {
@@ -242,8 +242,8 @@ ${sel} small { font: 700 11px/1 var(--text); letter-spacing: .16em; text-transfo
     },
     {
       id: 'orbit', cat: D, name: 'Orbites', use: 'Des planètes tournent autour de ton logo, chacune à son rythme.',
-      controls: [K.range('count', 'Nombre de planètes', 1, 6, 1, 3), K.speed(1), K.range('size', 'Taille du système', 200, 500, 10, 400, 'px')],
-      html: (o) => `<div class="x-sys"><div class="x-sun">${K.LOGO}</div>${Array.from({ length: o.count }, (_, i) => `<i class="x-path" style="width:${40 + (i + 1) * (60 / o.count)}%;height:${40 + (i + 1) * (60 / o.count)}%"></i><b class="x-planet" style="background:${PAL[i % PAL.length]}"></b>`).join('')}</div>`,
+      controls: [K.image(), K.range('count', 'Nombre de planètes', 1, 6, 1, 3), K.speed(1), K.range('size', 'Taille du système', 200, 500, 10, 400, 'px')],
+      html: (o) => `<div class="x-sys"><div class="x-sun">${K.logo(o)}</div>${Array.from({ length: o.count }, (_, i) => `<i class="x-path" style="width:${40 + (i + 1) * (60 / o.count)}%;height:${40 + (i + 1) * (60 / o.count)}%"></i><b class="x-planet" style="background:${PAL[i % PAL.length]}"></b>`).join('')}</div>`,
       css: (o) => `.x-sys { position: relative; width: ${o.size}px; height: ${o.size}px; display: grid; place-items: center; }
 .x-sys > * { position: absolute; }
 .x-sun { width: 22%; } .x-sun svg { display: block; width: 100%; height: auto; }

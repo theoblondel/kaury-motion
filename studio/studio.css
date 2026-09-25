@@ -391,3 +391,41 @@ html.ed-open { overflow: hidden; }
   .editor { animation: none; }
   .stage-tip i::after { animation: none; }
 }
+
+/* ---------- image perso ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.img-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.img-pick img, .img-none { width: 52px; height: 52px; border-radius: 12px; object-fit: contain; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+.img-none { display: grid; place-items: center; font: 700 10px/1.1 var(--text); text-align: center; color: var(--ink-3); }
+.img-pick label.chip { cursor: pointer; }
+.img-pick input:focus-visible + * , .img-pick label.chip:focus-within { outline: 2px solid var(--accent); }
+
+/* ---------- ma page (panier) ---------- */
+.cart-fab {
+  position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 60;
+  display: inline-flex; align-items: center; gap: 10px; padding: 14px 20px; border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--ink); color: var(--bg); font: 700 15px/1 var(--text); box-shadow: 0 18px 40px -18px rgba(0,0,0,.6);
+}
+.cart-fab svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+.cart-fab span { display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 999px; background: var(--accent); color: #1C1A1A; font-size: 13px; }
+.cart { position: fixed; inset: 0; z-index: 120; display: flex; justify-content: flex-end; background: rgba(12, 10, 9, .45); }
+.cart-panel { width: min(460px, 100%); height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; gap: 14px; padding: calc(20px + env(safe-area-inset-top, 0px)) 22px calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--bg); box-shadow: -30px 0 60px -30px rgba(0,0,0,.5); animation: cart-in .4s var(--ease); }
+@keyframes cart-in { from { transform: translateX(40px); opacity: 0; } }
+.cart-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.cart-head h2 { font-size: 32px; line-height: 1; }
+.cart-head p { margin: 6px 0 0; color: var(--ink-2); font-size: 14.5px; }
+.cart-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; align-content: start; overflow-y: auto; counter-reset: item; }
+.cart-list li { counter-increment: item; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 12px 12px 14px; border-radius: 14px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--line); }
+.cart-list li::before { content: counter(item); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #1C1A1A; font: 800 14px/1 var(--display); }
+.cart-list b { display: block; font: 700 15px/1.2 var(--text); }
+.cart-list small { color: var(--ink-3); font-size: 12.5px; }
+.cart-list .row-actions { display: flex; gap: 4px; }
+.cart-list .row-actions button { width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--bg-2); color: var(--ink); cursor: pointer; font: 700 14px/1 var(--text); }
+.cart-list .row-actions button:hover { background: var(--ink); color: var(--bg); }
+.cart-list .row-actions button:disabled { opacity: .35; cursor: default; background: var(--bg-2); color: var(--ink); }
+.cart-empty { margin: 0; color: var(--ink-2); }
+.cart-foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.cart-foot .btn { padding: 13px 18px; font-size: 15px; }
+.cart-foot .btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cart-status { flex-basis: 100%; margin: 0; min-height: 1.3em; font: 700 14px/1.3 var(--text); color: var(--green); }
+#add-cart svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }

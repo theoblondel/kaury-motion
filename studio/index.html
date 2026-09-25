@@ -76,6 +76,28 @@
     <div class="gallery" id="gallery"></div>
   </section>
 
+  <button type="button" class="cart-fab" id="cart-fab" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 10h16M10 10v10"/></svg>Ma page <span id="cart-count">0</span></button>
+
+  <div class="cart" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
+    <div class="cart-panel">
+      <header class="cart-head">
+        <div>
+          <h2 id="cart-title">Ma page</h2>
+          <p>Les effets s’enchaînent de haut en bas, un par écran. Change l’ordre avec les flèches.</p>
+        </div>
+        <button type="button" class="icon-btn" id="cart-close" aria-label="Fermer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </header>
+      <ol class="cart-list" id="cart-list"></ol>
+      <p class="cart-empty" id="cart-empty">Ta page est vide. Ouvre un effet et clique sur « Ajouter à ma page ».</p>
+      <footer class="cart-foot">
+        <button type="button" class="btn btn-accent" id="cart-download"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Télécharger ma page</button>
+        <button type="button" class="btn btn-solid" id="cart-copy">Copier le code</button>
+        <button type="button" class="reset" id="cart-clear">Tout retirer</button>
+        <p class="cart-status" id="cart-status" role="status" aria-live="polite"></p>
+      </footer>
+    </div>
+  </div>
+
   <div class="editor" id="editor" role="dialog" aria-modal="true" aria-labelledby="ed-name" hidden>
     <header class="ed-top">
       <div class="ed-nav">
@@ -126,6 +148,7 @@
       <div class="ed-actions">
         <button type="button" class="btn btn-accent" id="download"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Télécharger la page</button>
         <button type="button" class="btn btn-solid" id="copy-site"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Copier pour mon site</button>
+        <button type="button" class="btn btn-line" id="add-cart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Ajouter à ma page</button>
         <button type="button" class="btn btn-ghost" id="code-toggle" aria-expanded="false" aria-controls="ed-code"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></svg>Code</button>
         <button type="button" class="btn btn-ghost" id="help-toggle" aria-expanded="false" aria-controls="ed-help">Comment l’utiliser ?</button>
       </div>
@@ -203,7 +226,8 @@ scrub(timeline, { trigger: '.section' })</code></pre></article>
 <script src="effects-text.js"></script>
 <script src="effects-ui.js"></script>
 <script src="effects-motion.js"></script>
-<script src="effects-scenes.js"></script><!--/KIT-->
+<script src="effects-scenes.js"></script>
+<script src="effects-pages.js"></script><!--/KIT-->
 <!--APP--><script src="studio.js"></script><!--/APP-->
 </body>
 </html>
