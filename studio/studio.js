@@ -239,6 +239,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     {
       id: 'magnetic', group: 'Souris et 3D', name: 'Bouton aimanté', use: 'Pour tes boutons d’action : « Contact », « Réserver »…',
       tip: 'Approche ta souris du bouton',
+      tipTouch: 'Effet à la souris : essaie-le sur ordinateur',
       controls: [
         { k: 'label', type: 'text', label: 'Texte du bouton', def: 'Démarrer un projet' },
         { k: 'strength', type: 'range', label: 'Force de l’aimant', min: 0.05, max: 1, step: 0.05, def: 0.45 },
@@ -260,6 +261,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     {
       id: 'tilt', group: 'Souris et 3D', name: 'Carte 3D', use: 'Pour présenter un projet, un produit ou une offre.',
       tip: 'Passe la souris sur la carte',
+      tipTouch: 'Effet à la souris : essaie-le sur ordinateur',
       controls: [
         { k: 'title', type: 'text', label: 'Titre de la carte', def: 'Impossible à confondre' },
         { k: 'max', type: 'range', label: 'Inclinaison maximale', min: 2, max: 40, step: 1, def: 16, unit: '°' },
@@ -282,6 +284,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     {
       id: 'extrude', group: 'Souris et 3D', name: 'Logo en 3D', use: 'Donne une vraie épaisseur à ton logo, sans logiciel 3D.',
       tip: 'Il se balance tout seul. Survole-le pour le tourner',
+      tipTouch: 'Il se balance tout seul',
       controls: [
         { k: 'depth', type: 'range', label: 'Épaisseur', min: 0, max: 120, step: 1, def: 44, unit: 'px' },
         { k: 'layers', type: 'range', label: 'Finesse', help: 'Plus de tranches = côtés plus lisses.', min: 2, max: 40, step: 1, def: 24 },
@@ -392,6 +395,25 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     },
   ];
 
+  // Réglages visibles d'emblée ; le reste va dans « Plus de réglages ».
+  const ESSENTIALS = {
+    reveal: ['text', 'effect', 'by', 'color'],
+    wave: ['text', 'amplitude', 'duration', 'color'],
+    scramble: ['text', 'pool', 'color'],
+    counter: ['to', 'prefix', 'suffix', 'color'],
+    marquee: ['words', 'speed', 'bg', 'color'],
+    ring: ['text', 'speed', 'logo', 'color'],
+    stagger: ['from', 'look', 'each'],
+    magnetic: ['label', 'strength', 'bg'],
+    tilt: ['title', 'max', 'glare', 'bg'],
+    extrude: ['depth', 'sway', 'tilt'],
+    timeline: ['title', 'overlap', 'loop'],
+    spring: ['mass', 'stiffness', 'damping'],
+  };
+  // Effets qui se jouent une fois : les vignettes les rejouent en boucle.
+  const ONE_SHOT = new Set(['reveal', 'scramble', 'counter', 'stagger']);
+  const VW = 820, VH = 520; // taille virtuelle des vignettes, réduite à l'affichage
+
   // ---------- état ----------
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
@@ -400,40 +422,273 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
   const defaults = (fx) => Object.fromEntries(fx.controls.map((c) => [c.k, c.def]));
   const values = {};
   FX.forEach((fx) => (values[fx.id] = defaults(fx)));
-  let current = FX.find((f) => f.id === (location.hash.slice(1) || store.get('km-fx'))) || FX[0];
+  let current = null;
   let tab = 'file';
-  let cleanups = [];
+  let edCleanup = () => {};
 
-  const stage = $('#stage');
-  const style = document.createElement('style');
-  document.head.appendChild(style);
-
-  // ---------- lecture ----------
-  function track(r) {
-    if (!r) return r;
-    if (typeof r === 'function') cleanups.push(r);
-    else if (typeof r.destroy === 'function') cleanups.push(() => r.destroy());
-    else if (typeof r.pause === 'function') cleanups.push(() => r.pause());
-    return r;
-  }
-  function stop() {
-    cleanups.forEach((c) => { try { c(); } catch { /* déjà arrêté */ } });
-    cleanups = [];
-  }
-  const scopeArgs = (args) => args.map((a) => (typeof a === 'string' && /^[.#]/.test(a) ? stage.querySelectorAll(a) : a));
-  function mount() {
-    stop();
-    const o = values[current.id];
-    style.textContent = current.css(o).replace(/(^|\})\s*([^{}@]+)\{/g, (m, a, sel) => `${a}\n${sel.split(',').map((s) => '#stage ' + s.trim()).join(', ')} {`);
-    stage.innerHTML = current.html(o) + (current.tip ? `<div class="stage-tip"><i></i>${esc(current.tip)}</div>` : '');
-    if (current.run) current.run(o, stage, track);
-    else for (const c of current.calls(o)) {
-      let r = track(KM[c.fn](...resolve(scopeArgs(c.args))));
-      for (const [m, ...args] of c.chain || []) r = r[m](...resolve(scopeArgs(args)));
+  // ---------- jouer un effet dans un cadre ----------
+  let uid = 0;
+  function mountInto(box, fx, o) {
+    const cleanups = [];
+    const track = (r) => {
+      if (!r) return r;
+      if (typeof r === 'function') cleanups.push(r);
+      else if (typeof r.destroy === 'function') cleanups.push(() => r.destroy());
+      else if (typeof r.pause === 'function') cleanups.push(() => r.pause());
+      return r;
+    };
+    if (!box.id) box.id = `km-box-${++uid}`;
+    const scope = `#${box.id}`;
+    const css = fx.css(o).replace(/(^|\})\s*([^{}@]+)\{/g, (m, a, sel) => `${a}\n${sel.split(',').map((x) => `${scope} ${x.trim()}`).join(', ')} {`);
+    box.innerHTML = `<style>${css}</style>${fx.html(o)}`;
+    const scoped = (args) => args.map((a) => (typeof a === 'string' && /^[.#]/.test(a) ? box.querySelectorAll(a) : a));
+    if (fx.run) fx.run(o, box, track);
+    else for (const c of fx.calls(o)) {
+      let r = track(KM[c.fn](...resolve(scoped(c.args))));
+      for (const [m, ...args] of c.chain || []) r = r[m](...resolve(scoped(args)));
     }
-    current.after?.(o, stage);
+    fx.after?.(o, box);
+    return () => cleanups.forEach((c) => { try { c(); } catch { /* déjà arrêté */ } });
+  }
+
+  // ---------- galerie ----------
+  const gallery = $('#gallery');
+  const cards = [];
+  function renderGallery() {
+    gallery.innerHTML = FX.map((f, i) => `
+      <article class="card" data-group="${f.group}">
+        <button type="button" class="card-hit" data-i="${i}" aria-label="Personnaliser : ${esc(f.name)}"></button>
+        <div class="thumb"><div class="thumb-inner" style="width:${VW}px;height:${VH}px"></div></div>
+        <div class="card-body">
+          <span class="card-group">${f.group}</span>
+          <h3>${f.name}</h3>
+          <p>${f.use}</p>
+          <span class="card-cta">Personnaliser <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </article>`).join('');
+    gallery.querySelectorAll('.card').forEach((card, i) => {
+      const inner = card.querySelector('.thumb-inner');
+      const c = { card, inner, fx: FX[i], stop: () => {}, timer: 0, visible: false };
+      cards.push(c);
+    });
+    const fit = () => cards.forEach((c) => (c.inner.style.transform = `scale(${c.card.querySelector('.thumb').clientWidth / VW})`));
+    fit();
+    if (typeof ResizeObserver !== 'undefined') new ResizeObserver(fit).observe(gallery);
+    const play = (c) => {
+      c.stop();
+      c.stop = mountInto(c.inner, c.fx, values[c.fx.id]);
+    };
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        const c = cards.find((x) => x.card === e.target);
+        c.visible = e.isIntersecting;
+        clearInterval(c.timer);
+        if (c.visible) {
+          play(c);
+          if (ONE_SHOT.has(c.fx.id)) c.timer = setInterval(() => !current && play(c), 5200);
+        } else {
+          c.stop();
+          c.stop = () => {};
+        }
+      }
+    }, { rootMargin: '120px' });
+    cards.forEach((c) => io.observe(c.card));
+    gallery.addEventListener('click', (e) => {
+      const b = e.target.closest('.card-hit');
+      if (b) openEditor(FX[+b.dataset.i]);
+    });
+    // Rafraîchit une vignette quand on revient de l'éditeur avec d'autres réglages.
+    refreshCard = (fx) => {
+      const c = cards.find((x) => x.fx === fx);
+      if (c && c.visible) play(c);
+    };
+  }
+  let refreshCard = () => {};
+
+  // Filtres par catégorie
+  $('#filters').innerHTML = ['Tout', ...GROUPS].map((g, i) => `<button type="button" class="filter" data-g="${g}" aria-pressed="${i === 0}">${g}</button>`).join('');
+  $('#filters').addEventListener('click', (e) => {
+    const b = e.target.closest('.filter');
+    if (!b) return;
+    document.querySelectorAll('.filter').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    const g = b.dataset.g;
+    document.querySelectorAll('.card').forEach((c) => (c.hidden = g !== 'Tout' && c.dataset.group !== g));
+  });
+
+  // ---------- éditeur ----------
+  const ed = $('#editor');
+  const edStage = $('#ed-stage');
+  const edCanvas = $('#ed-canvas');
+  const touch = matchMedia('(hover: none)').matches;
+  // L'aperçu garde au moins la taille des vignettes (820 × 520) ; si l'écran
+  // est plus petit, tout est réduit pour que l'effet tienne en entier.
+  function fitEditor() {
+    const w = edStage.clientWidth, h = edStage.clientHeight;
+    if (!w || !h) return;
+    const k = Math.min(1, w / VW, h / VH);
+    edCanvas.style.width = `${w / k}px`;
+    edCanvas.style.height = `${h / k}px`;
+    edCanvas.style.transform = `scale(${k})`;
+  }
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(fitEditor).observe(edStage);
+  let lastFocus = null;
+  function openEditor(fx) {
+    lastFocus = document.activeElement;
+    ed.hidden = false;
+    document.documentElement.classList.add('ed-open');
+    select(fx);
+    $('#ed-close').focus();
+    history.replaceState(null, '', `#${fx.id}`);
+  }
+  function closeEditor() {
+    edCleanup();
+    edCleanup = () => {};
+    ed.hidden = true;
+    document.documentElement.classList.remove('ed-open');
+    if (current) refreshCard(current);
+    current = null;
+    history.replaceState(null, '', location.pathname + location.search);
+    lastFocus?.focus?.();
+  }
+  function select(fx) {
+    current = fx;
+    store.set('km-fx', fx.id);
+    const i = FX.indexOf(fx);
+    $('#ed-name').textContent = fx.name;
+    $('#ed-use').textContent = fx.use;
+    $('#ed-count').textContent = `${i + 1} / ${FX.length}`;
+    renderPresets(-1);
+    renderControls();
+    mount();
+  }
+  function mount() {
+    edCleanup();
+    fitEditor();
+    edCleanup = mountInto(edCanvas, current, values[current.id]);
+    const tip = touch && current.tipTouch !== undefined ? current.tipTouch : current.tip;
+    $('#ed-tip').hidden = !tip;
+    $('#ed-tip span').textContent = tip || '';
     renderCode();
   }
+  const step = (d) => select(FX[(FX.indexOf(current) + d + FX.length) % FX.length]);
+  $('#ed-prev').addEventListener('click', () => step(-1));
+  $('#ed-next').addEventListener('click', () => step(1));
+  $('#ed-close').addEventListener('click', closeEditor);
+  $('#replay').addEventListener('click', mount);
+  document.addEventListener('keydown', (e) => {
+    if (ed.hidden) return;
+    const typing = /INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || '');
+    if (e.key === 'Escape') closeEditor();
+    else if (!typing && e.key === 'ArrowRight') step(1);
+    else if (!typing && e.key === 'ArrowLeft') step(-1);
+    else if (e.key === 'Tab') {
+      // Garde le focus dans l'éditeur.
+      const f = [...ed.querySelectorAll('button:not([hidden]), input, select, summary, [tabindex="0"]')].filter((x) => x.offsetParent);
+      if (!f.length) return;
+      if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+    }
+  });
+
+  // ---------- réglages ----------
+  const fmt = (v, c) => `${v}${c.unit ? (c.unit === '×' || c.unit === '°' ? c.unit : ' ' + c.unit) : ''}`;
+  const opts = (c) => c.options.map((x) => (Array.isArray(x) ? x : [x, x]));
+  function controlHTML(c) {
+    const o = values[current.id];
+    const id = `c-${current.id}-${c.k}`;
+    const v = o[c.k];
+    const help = c.help ? `<small id="${id}-h">${c.help}</small>` : '';
+    const described = c.help ? ` aria-describedby="${id}-h"` : '';
+    if (c.type === 'toggle') return `<div class="ctl"><label class="toggle" for="${id}"><input type="checkbox" id="${id}" data-k="${c.k}"${v ? ' checked' : ''}${described}> ${c.label}</label>${help}</div>`;
+    let field = '';
+    if (c.type === 'range') field = `<input type="range" id="${id}" data-k="${c.k}" min="${c.min}" max="${c.max}" step="${c.step}" value="${v}"${described}>`;
+    if (c.type === 'text') field = `<input type="text" id="${id}" data-k="${c.k}" value="${esc(v)}" autocomplete="off" spellcheck="false"${described}>`;
+    if (c.type === 'select') field = `<select id="${id}" data-k="${c.k}"${described}>${opts(c).map(([val, lab]) => `<option value="${esc(val)}"${val === v ? ' selected' : ''}>${lab}</option>`).join('')}</select>`;
+    if (c.type === 'seg') field = `<div class="seg" role="group" aria-labelledby="${id}-l">${opts(c).map(([val, lab]) => `<button type="button" data-k="${c.k}" data-v="${esc(val)}" aria-pressed="${val === v}">${lab}</button>`).join('')}</div>`;
+    if (c.type === 'color') field = `<div class="swatches" role="group" aria-labelledby="${id}-l">${PALETTE.map((p) => `<button type="button" class="swatch" data-k="${c.k}" data-v="${p}" style="background:${p}" aria-label="${p}" aria-pressed="${p.toLowerCase() === String(v).toLowerCase()}"></button>`).join('')}<input type="color" id="${id}" data-k="${c.k}" value="${v}" aria-label="Autre couleur"></div>`;
+    const out = c.type === 'range' ? `<output id="${id}-o">${fmt(v, c)}</output>` : '';
+    const lab = c.type === 'seg' || c.type === 'color' ? `<span class="lbl" id="${id}-l">${c.label}</span>` : `<label for="${id}">${c.label}</label>`;
+    return `<div class="ctl"><div class="ctl-head">${lab}${out}</div>${field}${help}</div>`;
+  }
+  let advOpen = false;
+  function renderControls() {
+    const ess = ESSENTIALS[current.id] || [];
+    const main = current.controls.filter((c) => ess.includes(c.k));
+    const adv = current.controls.filter((c) => !ess.includes(c.k));
+    $('#controls').innerHTML = main.map(controlHTML).join('') +
+      (adv.length ? `<details class="more" id="more"${advOpen ? ' open' : ''}><summary>Plus de réglages <span>${adv.length}</span></summary><div class="more-body">${adv.map(controlHTML).join('')}</div></details>` : '') +
+      `<button type="button" class="reset" id="reset">Revenir aux réglages de départ</button>`;
+    $('#more')?.addEventListener('toggle', (e) => (advOpen = e.target.open));
+  }
+  function renderPresets(active) {
+    $('#presets').innerHTML = current.presets.map(([name], i) => `<button type="button" class="preset" data-i="${i}" aria-pressed="${i === active}">${name}</button>`).join('');
+  }
+
+  let debounce;
+  function change(k, v, instant) {
+    const c = current.controls.find((x) => x.k === k);
+    values[current.id][k] = c.type === 'range' ? +v : v;
+    if (c.type === 'range') $(`#c-${current.id}-${k}-o`).textContent = fmt(+v, c);
+    if (c.type === 'color') {
+      document.querySelectorAll(`#controls .swatch[data-k="${k}"]`).forEach((s) => s.setAttribute('aria-pressed', String(s.dataset.v.toLowerCase() === String(v).toLowerCase())));
+      $(`#c-${current.id}-${k}`).value = v;
+    }
+    renderPresets(-1);
+    clearTimeout(debounce);
+    debounce = setTimeout(mount, instant ? 0 : 160);
+  }
+  $('#controls').addEventListener('input', (e) => {
+    const t = e.target;
+    if (!t.dataset.k) return;
+    change(t.dataset.k, t.type === 'checkbox' ? t.checked : t.value, t.type === 'checkbox' || t.tagName === 'SELECT');
+  });
+  $('#controls').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    if (b.id === 'reset') {
+      values[current.id] = defaults(current);
+      renderControls();
+      renderPresets(-1);
+      return mount();
+    }
+    if (b.dataset.v === undefined) return;
+    if (!b.classList.contains('swatch')) b.parentElement.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    change(b.dataset.k, b.dataset.v, true);
+  });
+  $('#controls').addEventListener('submit', (e) => e.preventDefault());
+  // Les styles et la surprise gardent les textes que la personne a tapés.
+  const keepTexts = () => Object.fromEntries(current.controls.filter((c) => c.type === 'text').map((c) => [c.k, values[current.id][c.k]]));
+  $('#presets').addEventListener('click', (e) => {
+    const b = e.target.closest('.preset');
+    if (!b) return;
+    const i = +b.dataset.i;
+    values[current.id] = { ...defaults(current), ...keepTexts(), ...current.presets[i][1] };
+    renderControls();
+    renderPresets(i);
+    mount();
+  });
+  $('#surprise').addEventListener('click', () => {
+    const o = values[current.id];
+    for (const c of current.controls) {
+      if (c.type === 'range') {
+        // Les tailles restent dans la moitié haute pour garder un résultat lisible.
+        const lo = c.k === 'size' ? (c.min + c.max) / 2 : c.min;
+        const n = Math.round((lo + Math.random() * (c.max - lo)) / c.step) * c.step;
+        o[c.k] = +n.toFixed(4);
+      } else if (c.type === 'seg' || c.type === 'select') {
+        const list = opts(c);
+        o[c.k] = list[(Math.random() * list.length) | 0][0];
+      } else if (c.type === 'color') {
+        o[c.k] = PALETTE[(Math.random() * PALETTE.length) | 0];
+      }
+    }
+    if (current.id === 'marquee' && o.bg === o.color) o.color = o.bg === '#1C1A1A' ? '#F1E8CB' : '#1C1A1A';
+    if ('color' in o && o.color === '#1C1A1A' && current.id !== 'marquee') o.color = '#F1E8CB';
+    if (current.id === 'stagger') { o.cols = Math.max(o.cols, 8); o.rows = Math.max(o.rows, 5); }
+    renderControls();
+    renderPresets(-1);
+    mount();
+  });
 
   // ---------- export ----------
   function usedNames(fx, o) {
@@ -462,14 +717,9 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     try { return (libCache = (await (await fetch(el.src)).text()).trim()); } catch { return '/* Colle ici le contenu de kaury-motion.min.js */'; }
   }
   const LIB_MARK = '/*__KM_LIB__*/';
-  function jsModule(fx, o) {
-    return `// Copie dist/kaury-motion.js du dépôt dans ton projet, puis :\nimport { ${usedNames(fx, o).join(', ')} } from './kaury-motion.js';\n\n${jsBody(fx, o)}\n`;
-  }
-  function snippet(fx, o, lib) {
-    return `<!-- Kaury Motion : ${fx.name} -->\n${fx.html(o)}\n\n<style>\n${fx.css(o)}\n</style>\n\n<script>${lib}</script>\n<script>\nconst { ${usedNames(fx, o).join(', ')} } = KauryMotion;\n\n${jsBody(fx, o)}\n</script>\n`;
-  }
-  function page(fx, o, lib) {
-    return `<!doctype html>
+  const jsModule = (fx, o) => `// Copie dist/kaury-motion.js du dépôt dans ton projet, puis :\nimport { ${usedNames(fx, o).join(', ')} } from './kaury-motion.js';\n\n${jsBody(fx, o)}\n`;
+  const snippet = (fx, o, lib) => `<!-- Kaury Motion : ${fx.name} -->\n${fx.html(o)}\n\n<style>\n${fx.css(o)}\n</style>\n\n<script>${lib}</script>\n<script>\nconst { ${usedNames(fx, o).join(', ')} } = KauryMotion;\n\n${jsBody(fx, o)}\n</script>\n`;
+  const page = (fx, o, lib) => `<!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
@@ -493,39 +743,12 @@ ${jsBody(fx, o)}
 </body>
 </html>
 `;
-  }
   async function codeFor(t, forDisplay) {
     const o = values[current.id];
     if (t === 'js') return jsModule(current, o);
     const lib = forDisplay ? LIB_MARK : await libSource();
     return t === 'html' ? snippet(current, o, lib) : page(current, o, lib);
   }
-
-  const STEPS = {
-    file: [
-      'Clique sur <b>Télécharger la page</b>. Tu obtiens un fichier <code>.html</code>.',
-      'Ouvre-le dans ton navigateur : l’animation marche tout de suite, même sans internet.',
-      'Pour la mettre en ligne, dépose ce fichier chez ton hébergeur, ou envoie-le à ton développeur.',
-    ],
-    html: [
-      'Clique sur <b>Copier le code</b>.',
-      'Dans ton site, ajoute un bloc <b>HTML personnalisé</b> (WordPress, Webflow, Wix, Squarespace…) là où tu veux l’animation.',
-      'Colle le code et publie. Le framework est déjà inclus dans le bloc, rien d’autre à installer.',
-    ],
-    js: [
-      'Copie le fichier <code>dist/kaury-motion.js</code> du dépôt dans ton projet.',
-      'Clique sur <b>Copier le code</b> et colle-le dans ton script. Ajoute le HTML et le CSS visibles dans « Voir le code » de l’option « Ajouter à mon site ».',
-      'Les effets qui tournent en continu renvoient une fonction : appelle-la pour les arrêter.',
-    ],
-  };
-  function renderSteps() {
-    const steps = STEPS[tab].slice();
-    if (tab === 'file' && downloadBlocked) steps[0] = 'Clique sur <b>Copier le code</b>, colle-le dans un fichier texte vide et enregistre-le sous <code>animation.html</code>.';
-    $('#get-steps').innerHTML = steps.map((s) => `<li>${s}</li>`).join('');
-    $('#download').hidden = tab !== 'file' || downloadBlocked;
-    $('#copy').className = `btn btn-sm ${tab === 'file' && !downloadBlocked ? 'btn-line' : 'btn-solid'}`;
-  }
-
   function highlight(src, lang) {
     const out = [];
     const re = lang === 'js'
@@ -543,168 +766,67 @@ ${jsBody(fx, o)}
     return out.join('');
   }
   async function renderCode() {
+    if ($('#ed-code').hidden) return;
     const t = tab;
     const src = await codeFor(t, true);
     if (t !== tab) return;
     $('#code code').innerHTML = highlight(src, t === 'js' ? 'js' : 'html').replace(esc(LIB_MARK), '<span class="c">/* le framework Kaury Motion (27 Ko) est inclus ici */</span>');
   }
-
-  // ---------- réglages ----------
-  const fmt = (v, c) => `${v}${c.unit ? (c.unit === '×' || c.unit === '°' ? c.unit : ' ' + c.unit) : ''}`;
-  const opts = (c) => c.options.map((x) => (Array.isArray(x) ? x : [x, x]));
-  function renderControls() {
-    const o = values[current.id];
-    $('#controls').innerHTML = current.controls.map((c) => {
-      const id = `c-${current.id}-${c.k}`;
-      const v = o[c.k];
-      const help = c.help ? `<small id="${id}-h">${c.help}</small>` : '';
-      const described = c.help ? ` aria-describedby="${id}-h"` : '';
-      if (c.type === 'toggle') return `<div class="ctl"><label class="toggle" for="${id}"><input type="checkbox" id="${id}" data-k="${c.k}"${v ? ' checked' : ''}${described}> ${c.label}</label>${help}</div>`;
-      let field = '';
-      if (c.type === 'range') field = `<input type="range" id="${id}" data-k="${c.k}" min="${c.min}" max="${c.max}" step="${c.step}" value="${v}"${described}>`;
-      if (c.type === 'text') field = `<input type="text" id="${id}" data-k="${c.k}" value="${esc(v)}" autocomplete="off" spellcheck="false"${described}>`;
-      if (c.type === 'select') field = `<select id="${id}" data-k="${c.k}"${described}>${opts(c).map(([val, lab]) => `<option value="${esc(val)}"${val === v ? ' selected' : ''}>${lab}</option>`).join('')}</select>`;
-      if (c.type === 'seg') field = `<div class="seg" role="group" aria-labelledby="${id}-l">${opts(c).map(([val, lab]) => `<button type="button" data-k="${c.k}" data-v="${esc(val)}" aria-pressed="${val === v}">${lab}</button>`).join('')}</div>`;
-      if (c.type === 'color') {
-        field = `<div class="swatches" role="group" aria-labelledby="${id}-l">${PALETTE.map((p) => `<button type="button" class="swatch" data-k="${c.k}" data-v="${p}" style="background:${p}" aria-label="${p}" aria-pressed="${p.toLowerCase() === String(v).toLowerCase()}"></button>`).join('')}<input type="color" id="${id}" data-k="${c.k}" value="${v}" aria-label="Autre couleur"></div>`;
-      }
-      const out = c.type === 'range' ? `<output id="${id}-o">${fmt(v, c)}</output>` : '';
-      const lab = c.type === 'seg' || c.type === 'color' ? `<span class="lbl" id="${id}-l">${c.label}</span>` : `<label for="${id}">${c.label}</label>`;
-      return `<div class="ctl"><div class="ctl-head">${lab}${out}</div>${field}${help}</div>`;
-    }).join('') + `<button type="button" class="reset" id="reset">Revenir aux réglages de départ</button>`;
-  }
-  function renderPresets(active) {
-    $('#presets').innerHTML = current.presets.map(([name], i) => `<button type="button" class="preset" data-i="${i}" aria-pressed="${i === active}">${name}</button>`).join('');
-  }
-
-  let debounce;
-  function change(k, v, instant) {
-    const c = current.controls.find((x) => x.k === k);
-    values[current.id][k] = c.type === 'range' ? +v : v;
-    if (c.type === 'range') $(`#c-${current.id}-${k}-o`).textContent = fmt(+v, c);
-    if (c.type === 'color') {
-      document.querySelectorAll(`.swatch[data-k="${k}"]`).forEach((s) => s.setAttribute('aria-pressed', String(s.dataset.v.toLowerCase() === String(v).toLowerCase())));
-      $(`#c-${current.id}-${k}`).value = v;
-    }
-    renderPresets(-1);
-    clearTimeout(debounce);
-    debounce = setTimeout(mount, instant ? 0 : 160);
-  }
-  $('#controls').addEventListener('input', (e) => {
-    const t = e.target;
-    if (!t.dataset.k) return;
-    change(t.dataset.k, t.type === 'checkbox' ? t.checked : t.value, t.type === 'checkbox' || t.tagName === 'SELECT');
+  $('#code-toggle').addEventListener('click', (e) => {
+    const box = $('#ed-code');
+    box.hidden = !box.hidden;
+    e.currentTarget.setAttribute('aria-expanded', String(!box.hidden));
+    renderCode();
   });
-  $('#controls').addEventListener('click', (e) => {
-    const b = e.target.closest('button');
-    if (!b) return;
-    if (b.id === 'reset') {
-      values[current.id] = defaults(current);
-      renderControls();
-      renderPresets(-1);
-      return mount();
-    }
-    if (b.dataset.v === undefined) return;
-    if (!b.classList.contains('swatch')) b.parentElement.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-    change(b.dataset.k, b.dataset.v, true);
-  });
-  $('#controls').addEventListener('submit', (e) => e.preventDefault());
-  $('#presets').addEventListener('click', (e) => {
-    const b = e.target.closest('.preset');
-    if (!b) return;
-    const i = +b.dataset.i;
-    values[current.id] = { ...defaults(current), ...keepTexts(), ...current.presets[i][1] };
-    renderControls();
-    renderPresets(i);
-    mount();
-  });
-  // Les styles et la surprise gardent les textes que la personne a tapés.
-  const keepTexts = () => Object.fromEntries(current.controls.filter((c) => c.type === 'text').map((c) => [c.k, values[current.id][c.k]]));
-
-  $('#surprise').addEventListener('click', () => {
-    const o = values[current.id];
-    for (const c of current.controls) {
-      if (c.type === 'range') {
-        // Les tailles restent dans la moitié haute pour garder un résultat lisible.
-        const lo = c.k === 'size' ? (c.min + c.max) / 2 : c.min;
-        const n = Math.round((lo + Math.random() * (c.max - lo)) / c.step) * c.step;
-        o[c.k] = +n.toFixed(4);
-      } else if (c.type === 'seg' || c.type === 'select') {
-        const list = opts(c);
-        o[c.k] = list[(Math.random() * list.length) | 0][0];
-      } else if (c.type === 'color') {
-        o[c.k] = PALETTE[(Math.random() * PALETTE.length) | 0];
-      }
-    }
-    // Garde le texte lisible sur le fond de la scène et le bandeau lisible.
-    if (current.id === 'marquee' && o.bg === o.color) o.color = o.bg === '#1C1A1A' ? '#F1E8CB' : '#1C1A1A';
-    if ('color' in o && o.color === '#1C1A1A' && current.id !== 'marquee') o.color = '#F1E8CB';
-    if (current.id === 'stagger') { o.cols = Math.max(o.cols, 8); o.rows = Math.max(o.rows, 5); }
-    renderControls();
-    renderPresets(-1);
-    mount();
-  });
-
-  // ---------- liste des effets ----------
-  function renderList() {
-    $('#fx-list').innerHTML = GROUPS.map((g) => `<div class="fx-group" role="group" aria-label="${g}"><p class="fx-group-title">${g}</p>${FX.filter((f) => f.group === g)
-      .map((f) => `<button type="button" class="fx-item" data-id="${f.id}" aria-current="${f === current}"><b>${f.name}</b><span>${f.use}</span></button>`)
-      .join('')}</div>`).join('');
-  }
-  $('#fx-list').addEventListener('click', (e) => {
-    const b = e.target.closest('.fx-item');
-    if (!b) return;
-    select(FX.find((f) => f.id === b.dataset.id));
-    if (matchMedia('(max-width: 820px)').matches) $('#stage').scrollIntoView({ block: 'center' });
-  });
-  function select(fx) {
-    current = fx;
-    store.set('km-fx', fx.id);
-    $('#stage-name').textContent = fx.name;
-    $('#stage-use').textContent = fx.use;
-    renderList();
-    renderControls();
-    renderPresets(-1);
-    mount();
-  }
-
-  // ---------- récupérer ----------
-  document.querySelectorAll('.opt').forEach((b) =>
+  document.querySelectorAll('.code-tab').forEach((b) =>
     b.addEventListener('click', () => {
       tab = b.dataset.tab;
-      document.querySelectorAll('.opt').forEach((x) => x.setAttribute('aria-selected', String(x === b)));
-      renderSteps();
+      document.querySelectorAll('.code-tab').forEach((x) => x.setAttribute('aria-selected', String(x === b)));
       renderCode();
     }),
   );
+  $('#help-toggle').addEventListener('click', (e) => {
+    const box = $('#ed-help');
+    box.hidden = !box.hidden;
+    e.currentTarget.setAttribute('aria-expanded', String(!box.hidden));
+  });
+
   let statusTimer;
   function status(text) {
-    const el = $('#get-status');
+    const el = $('#ed-status');
     el.textContent = text;
+    el.classList.add('show');
     clearTimeout(statusTimer);
-    statusTimer = setTimeout(() => (el.textContent = ''), 3500);
+    statusTimer = setTimeout(() => el.classList.remove('show'), 3200);
   }
-  $('#copy').addEventListener('click', async () => {
-    const text = await codeFor(tab);
+  async function copy(text, done) {
     try {
       await navigator.clipboard.writeText(text);
-      status('Code copié. Tu peux le coller.');
+      status(done);
     } catch {
-      $('#code-wrap').open = true;
+      $('#ed-code').hidden = false;
+      $('#code-toggle').setAttribute('aria-expanded', 'true');
+      await renderCode();
       const r = document.createRange();
       r.selectNodeContents($('#code code'));
       getSelection().removeAllRanges();
       getSelection().addRange(r);
-      status('Le code est sélectionné : fais Ctrl+C (ou Cmd+C).');
+      status('Code sélectionné : fais Ctrl+C (ou Cmd+C).');
     }
-  });
+  }
+  $('#copy-site').addEventListener('click', async () => copy(await codeFor('html'), 'Copié ! Colle-le dans un bloc « HTML personnalisé » de ton site.'));
+  $('#copy-code').addEventListener('click', async () => copy(await codeFor(tab), 'Code copié.'));
 
   // Sur claude.ai, la page demande l'accord du visiteur pour enregistrer ;
   // ailleurs, un simple lien de téléchargement suffit.
   const hosted = window.claude && typeof window.claude.use === 'function';
   const downloads = hosted ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
-  let downloadBlocked = hosted;
-  if (hosted) downloads.then((d) => { downloadBlocked = !d; renderSteps(); });
+  const setDownload = (ok) => {
+    $('#download').hidden = !ok;
+    $('#copy-page-li').hidden = ok;
+  };
+  setDownload(!hosted);
+  if (hosted) downloads.then((d) => setDownload(!!d));
   $('#download').addEventListener('click', async () => {
     const html = await codeFor('file');
     const filename = `kaury-motion-${current.id}.html`;
@@ -712,9 +834,9 @@ ${jsBody(fx, o)}
     if (d) {
       try {
         await d.save({ filename, data: html });
-        status('Page enregistrée.');
+        status('Page enregistrée. Ouvre-la dans ton navigateur.');
       } catch (err) {
-        status(err && err.code === 'declined' ? 'Téléchargement annulé.' : 'Téléchargement impossible ici : utilise « Copier le code ».');
+        status(err && err.code === 'declined' ? 'Téléchargement annulé.' : 'Téléchargement impossible ici : utilise « Copier pour mon site ».');
       }
       return;
     }
@@ -724,24 +846,20 @@ ${jsBody(fx, o)}
     document.body.appendChild(a);
     a.click();
     a.remove();
-    status('Téléchargement lancé.');
+    status('Téléchargement lancé. Ouvre le fichier dans ton navigateur.');
   });
-  $('#replay').addEventListener('click', mount);
 
   // ---------- hero ----------
   function hero() {
     KM.reveal('#hero-title', { effect: 'rise', by: 'chars', each: 32, duration: 1300 });
     KM.animate('#hero-dot', { scale: [0, 1] }, { delay: 700, ease: KM.spring({ stiffness: 260, damping: 9 }) });
     const art = $('.hero-art');
-    const r = Math.max(90, art.clientWidth / 2 - 30);
-    KM.ring('#hero-ring', { radius: r, fontSize: Math.max(12, r / 11), speed: 16, scrollBoost: 1.5 });
+    const r = Math.max(80, art.clientWidth / 2 - 26);
+    KM.ring('#hero-ring', { radius: r, fontSize: Math.max(11, r / 11), speed: 16, scrollBoost: 1.5 });
     KM.extrude('#hero-logo', { depth: 42, layers: 22, shade: 0.5 });
     KM.tilt('.hero-art', { max: 22, glare: false, scale: 1, perspective: 1100 });
-    KM.float('#hero-logo', { y: 16, rotate: 3, sway: 24 });
+    KM.float('#hero-logo', { y: 14, rotate: 3, sway: 24 });
     KM.magnetic('.hero-actions .btn', { strength: 0.3, radius: 40 });
-    document.querySelectorAll('[data-count]').forEach((el, i) =>
-      KM.counter(el, { to: +el.dataset.count, delay: 600 + i * 120, duration: 1600 }),
-    );
     KM.marquee('#band', { speed: 90, gap: 40, scrollBoost: 1.2, skew: 8 });
   }
   let stopCursor = () => {};
@@ -755,6 +873,12 @@ ${jsBody(fx, o)}
 
   hero();
   cursorOn($('#cursor-toggle').checked);
-  renderSteps();
-  select(current);
+  renderGallery();
+  // Un lien direct (#tilt, #wave…) ouvre l'effet dans l'éditeur.
+  const fromHash = () => {
+    const fx = FX.find((f) => f.id === location.hash.slice(1));
+    if (fx && fx !== current) (ed.hidden ? openEditor(fx) : select(fx));
+  };
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
 })();

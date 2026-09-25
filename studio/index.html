@@ -19,7 +19,7 @@
     <a class="brand" href="#top"><svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 232" aria-hidden="true"> <rect width="232" height="232" rx="52" fill="#F56E2E"/> <g transform="translate(16, 36)"> <path d="M199.75 142.65L184.57 113.36C183.98 112.21 182.83 111.54 181.64 111.54C181.21 111.54 180.76 111.62 180.33 111.82C167.47 117.53 155.41 120.43 144.5 120.43C130.22 121.08 107.65 116.91 100.07 103.4C93.61 91.88 98.16 72.67 110.11 63.56C121.25 55.06 135.98 53.37 149.31 55.8C150.65 56.04 152.02 56.36 153.12 57.19C156.61 59.86 154.58 67.37 152.39 70.19C150.1 73.14 146.16 75.07 141.58 75.47C140.99 75.53 140.39 75.55 139.79 75.55C138.9 75.55 138.01 75.49 137.12 75.38C134.18 75.01 131.18 74.21 128.2 73.15C128.2 73.15 121.95 105.27 144.43 109.01C182.18 115.29 191.09 78.25 191.25 77.69C191.49 76.6 197.12 50.93 183.28 32.79C174.73 21.59 160.8 15.91 141.87 15.91C141.11 15.91 140.35 15.91 139.56 15.94C90.98 17.09 58.95 53.7 46.2 71.53V3.44C46.2 1.54 44.71 0 42.88 0H3.32001C1.49001 0 0 1.54 0 3.44V156.98C0 158.87 1.48001 160.42 3.32001 160.42H41.11C42.57 160.42 43.86 159.43 44.28 157.97C45.57 153.61 45.76 132.1 45.76 119.53C45.76 117.16 48.74 116.24 49.97 118.23C59.67 133.88 87.12 166.81 143.66 160.42C172.89 157.11 197.32 147.91 198.33 147.38C199.14 146.96 199.73 146.22 200 145.34C200.27 144.46 200.19 143.49 199.76 142.67L199.75 142.65Z" fill="#F1E8CB"/> </g> </svg><span>Kaury Motion</span></a>
     <nav class="topnav" aria-label="Sections">
       <a href="#comment">Comment ça marche</a>
-      <a href="#studio">Studio</a>
+      <a href="#studio">Effets</a>
       <a href="#dev">Développeurs</a>
     </nav>
   </header>
@@ -30,7 +30,7 @@
       <h1 class="hero-title"><span id="hero-title">Kaury Motion</span><span class="dot" id="hero-dot">.</span></h1>
       <p class="hero-lede">Des animations dignes d’un studio pour ton site. Tu choisis un effet, tu le règles à la souris, puis tu télécharges une page toute prête ou tu copies le code. Pas besoin de savoir coder.</p>
       <div class="hero-actions">
-        <a class="btn btn-solid" href="#studio" data-km-cursor="Go">Essayer le studio</a>
+        <a class="btn btn-solid" href="#studio" data-km-cursor="Go">Voir les effets</a>
         <a class="btn btn-line" href="#comment">Comment ça marche</a>
       </div>
       <dl class="facts">
@@ -53,77 +53,97 @@
   <section class="how" id="comment" aria-labelledby="how-title">
     <h2 id="how-title">Comment ça marche</h2>
     <ol class="steps">
-      <li><b>Choisis un effet</b><p>Dans la liste du studio, chaque effet dit à quoi il sert : un titre, un bouton, un logo…</p></li>
+      <li><b>Choisis un effet</b><p>Parcours la galerie : chaque carte montre l’effet en direct et dit à quoi il sert.</p></li>
       <li><b>Règle-le</b><p>Pars d’un style prêt en un clic, puis change le texte, les couleurs et la vitesse. L’aperçu bouge en direct.</p></li>
       <li><b>Récupère-le</b><p>Télécharge une page toute prête ou copie le code dans ton site. Aucun compte, aucune installation.</p></li>
     </ol>
   </section>
 
-  <section class="studio" id="studio" aria-labelledby="studio-title">
-    <div class="studio-head">
-      <h2 id="studio-title">Le studio</h2>
-      <p>Clique sur un effet à gauche. Tout ce que tu changes à droite se voit tout de suite dans l’aperçu.</p>
+  <section class="gallery-sec" id="studio" aria-labelledby="studio-title">
+    <div class="gallery-head">
+      <div>
+        <h2 id="studio-title">Choisis un effet</h2>
+        <p>Chaque carte tourne en direct. Clique sur celle qui te plaît pour la personnaliser.</p>
+      </div>
+      <div class="filters" id="filters" role="group" aria-label="Filtrer par catégorie"></div>
     </div>
-    <div class="studio-grid">
-      <nav class="fx-list" id="fx-list" aria-label="Effets"></nav>
+    <div class="gallery" id="gallery"></div>
+  </section>
 
-      <div class="stage-wrap">
-        <div class="stage-bar">
-          <div class="stage-title">
-            <h3 id="stage-name"></h3>
-            <p id="stage-use"></p>
-          </div>
-          <div class="stage-actions">
-            <button class="chip" id="replay" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5"/></svg>Rejouer</button>
-            <button class="chip chip-accent" id="surprise" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="15" r="1.2"/><circle cx="15" cy="9" r="1.2"/><circle cx="9" cy="15" r="1.2"/></svg>Surprise</button>
+  <div class="editor" id="editor" role="dialog" aria-modal="true" aria-labelledby="ed-name" hidden>
+    <header class="ed-top">
+      <div class="ed-nav">
+        <button type="button" class="icon-btn" id="ed-prev" aria-label="Effet précédent"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <span class="ed-count" id="ed-count"></span>
+        <button type="button" class="icon-btn" id="ed-next" aria-label="Effet suivant"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+      <div class="ed-title">
+        <h2 id="ed-name"></h2>
+        <p id="ed-use"></p>
+      </div>
+      <button type="button" class="icon-btn icon-btn-close" id="ed-close" aria-label="Fermer et revenir à la galerie"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </header>
+
+    <div class="ed-main">
+      <div class="ed-view">
+        <div class="ed-stage-wrap">
+          <div class="stage" id="ed-stage"><div class="ed-canvas" id="ed-canvas"></div></div>
+          <div class="stage-tip" id="ed-tip" hidden><i></i><span></span></div>
+          <div class="stage-float">
+            <button class="chip chip-dark" id="replay" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5"/></svg>Rejouer</button>
           </div>
         </div>
-        <div class="stage" id="stage"></div>
+        <div class="ed-code" id="ed-code" hidden>
+          <div class="code-bar" role="tablist" aria-label="Format du code">
+            <button type="button" role="tab" class="code-tab" data-tab="file" aria-selected="true">Page complète</button>
+            <button type="button" role="tab" class="code-tab" data-tab="html" aria-selected="false">Bloc pour mon site</button>
+            <button type="button" role="tab" class="code-tab" data-tab="js" aria-selected="false">Module JS</button>
+            <button type="button" class="chip" id="copy-code">Copier ce code</button>
+          </div>
+          <pre class="code" id="code" tabindex="0"><code></code></pre>
+        </div>
       </div>
 
-      <aside class="panel" aria-label="Réglages">
+      <aside class="ed-panel" aria-label="Réglages">
         <div class="panel-block">
-          <p class="panel-label">Styles prêts</p>
+          <div class="panel-row">
+            <p class="panel-label">Styles prêts</p>
+            <button class="chip chip-accent chip-sm" id="surprise" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="15" r="1.2"/><circle cx="15" cy="9" r="1.2"/><circle cx="9" cy="15" r="1.2"/></svg>Surprise</button>
+          </div>
           <div class="presets" id="presets"></div>
         </div>
         <form class="controls" id="controls"></form>
       </aside>
-
-      <section class="get" aria-labelledby="get-title">
-        <div class="get-head">
-          <h3 id="get-title">Récupérer l’animation</h3>
-          <p>Choisis comment tu veux l’utiliser.</p>
-        </div>
-        <div class="get-options" role="tablist" aria-label="Façon de récupérer l’animation">
-          <button type="button" role="tab" class="opt" data-tab="file" aria-selected="true">
-            <span class="opt-badge">Le plus simple</span>
-            <b>Page prête à l’emploi</b>
-            <span>Un fichier .html complet qui marche tout seul.</span>
-          </button>
-          <button type="button" role="tab" class="opt" data-tab="html" aria-selected="false">
-            <b>Ajouter à mon site</b>
-            <span>Un bloc à coller dans WordPress, Webflow, Wix ou ton HTML.</span>
-          </button>
-          <button type="button" role="tab" class="opt" data-tab="js" aria-selected="false">
-            <b>Module JavaScript</b>
-            <span>Pour les développeurs : Vite, Astro, React…</span>
-          </button>
-        </div>
-        <div class="get-body">
-          <ol class="get-steps" id="get-steps"></ol>
-          <div class="get-actions">
-            <button type="button" class="btn btn-solid btn-sm" id="download">Télécharger la page</button>
-            <button type="button" class="btn btn-line btn-sm" id="copy">Copier le code</button>
-            <span class="get-status" id="get-status" role="status" aria-live="polite"></span>
-          </div>
-        </div>
-        <details class="code-wrap" id="code-wrap">
-          <summary>Voir le code</summary>
-          <pre class="code" id="code" tabindex="0"><code></code></pre>
-        </details>
-      </section>
     </div>
-  </section>
+
+    <footer class="ed-foot">
+      <div class="ed-actions">
+        <button type="button" class="btn btn-accent" id="download"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Télécharger la page</button>
+        <button type="button" class="btn btn-solid" id="copy-site"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Copier pour mon site</button>
+        <button type="button" class="btn btn-ghost" id="code-toggle" aria-expanded="false" aria-controls="ed-code"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></svg>Code</button>
+        <button type="button" class="btn btn-ghost" id="help-toggle" aria-expanded="false" aria-controls="ed-help">Comment l’utiliser ?</button>
+      </div>
+      <p class="ed-status" id="ed-status" role="status" aria-live="polite"></p>
+      <div class="ed-help" id="ed-help" hidden>
+        <div>
+          <b>Télécharger la page</b>
+          <ol>
+            <li id="copy-page-li" hidden>Ici le téléchargement n’est pas possible : ouvre « Code », onglet « Page complète », copie et enregistre dans un fichier <code>animation.html</code>.</li>
+            <li>Tu obtiens un fichier <code>.html</code> complet.</li>
+            <li>Double-clique dessus : l’animation s’ouvre dans ton navigateur, même hors ligne.</li>
+            <li>Pour la mettre en ligne, dépose le fichier chez ton hébergeur.</li>
+          </ol>
+        </div>
+        <div>
+          <b>Copier pour mon site</b>
+          <ol>
+            <li>Dans ton site, ajoute un bloc <b>HTML personnalisé</b> (WordPress, Webflow, Wix, Squarespace…).</li>
+            <li>Colle, puis publie. Le framework est déjà inclus, rien à installer.</li>
+          </ol>
+        </div>
+      </div>
+    </footer>
+  </div>
 
   <section class="dev" id="dev" aria-labelledby="dev-title">
     <div class="dev-head">
