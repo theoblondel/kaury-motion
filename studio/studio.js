@@ -533,15 +533,32 @@ ${jsBody(fx, o)}
       flash(btn, 'Selected, press Ctrl+C');
     }
   });
+  // Inside claude.ai the page asks the viewer's permission to save;
+  // anywhere else a plain blob download does the job.
+  const hosted = window.claude && typeof window.claude.use === 'function';
+  const downloads = hosted ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
+  if (hosted) downloads.then((d) => ($('#download').hidden = !d));
   $('#download').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
     const html = await fullPage(current, values[current.id]);
+    const filename = `kaury-motion-${current.id}.html`;
+    const d = await downloads;
+    if (d) {
+      try {
+        await d.save({ filename, data: html });
+        flash(btn, 'Saved');
+      } catch (err) {
+        flash(btn, err && err.code === 'declined' ? 'Cancelled' : 'Use Copy code instead');
+      }
+      return;
+    }
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-    a.download = `kaury-motion-${current.id}.html`;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
-    flash(e.currentTarget, 'Downloading');
+    flash(btn, 'Downloading');
   });
   $('#replay').addEventListener('click', mount);
 
