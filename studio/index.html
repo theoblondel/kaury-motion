@@ -34,7 +34,7 @@
         <a class="btn btn-line" href="#comment">Comment ça marche</a>
       </div>
       <dl class="facts">
-        <div><dt>Effets</dt><dd><span data-count="15">15</span></dd></div>
+        <div><dt>Effets</dt><dd><span data-count="100" id="fx-total">100</span></dd></div>
         <div><dt>Poids</dt><dd><span data-count="11">11</span> Ko</dd></div>
         <div><dt>Dépendances</dt><dd><span data-count="0">0</span></dd></div>
         <div><dt>Prix</dt><dd>Gratuit</dd></div>
@@ -61,12 +61,18 @@
 
   <section class="gallery-sec" id="studio" aria-labelledby="studio-title">
     <div class="gallery-head">
-      <div>
-        <h2 id="studio-title">Choisis un effet</h2>
-        <p>Chaque carte tourne en direct. Clique sur celle qui te plaît pour la personnaliser.</p>
-      </div>
-      <div class="filters" id="filters" role="group" aria-label="Filtrer par catégorie"></div>
+      <h2 id="studio-title">Choisis un effet</h2>
+      <p>Chaque carte tourne en direct. Clique sur celle qui te plaît pour la personnaliser.</p>
     </div>
+    <div class="gal-tools">
+      <label class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        <input type="search" id="search" placeholder="Chercher : bouton, logo, fond, chargement…" autocomplete="off" aria-label="Chercher un effet">
+      </label>
+      <span class="gal-count" id="gal-count" aria-live="polite"></span>
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="Filtrer par catégorie"></div>
+    <p class="gal-empty" id="gal-empty" hidden>Aucun effet ne correspond. Essaie un autre mot, comme « texte » ou « 3D ».</p>
     <div class="gallery" id="gallery"></div>
   </section>
 
@@ -107,7 +113,7 @@
       <aside class="ed-panel" aria-label="Réglages">
         <div class="panel-block">
           <div class="panel-row">
-            <p class="panel-label">Styles prêts</p>
+            <p class="panel-label" id="presets-label">Styles prêts</p>
             <button class="chip chip-accent chip-sm" id="surprise" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="15" r="1.2"/><circle cx="15" cy="9" r="1.2"/><circle cx="9" cy="15" r="1.2"/></svg>Surprise</button>
           </div>
           <div class="presets" id="presets"></div>
@@ -193,6 +199,11 @@ scrub(timeline, { trigger: '.section' })</code></pre></article>
 </div>
 
 <!--LIB--><script id="km-lib" src="../dist/kaury-motion.min.js"></script><!--/LIB-->
+<!--KIT--><script src="fx-kit.js"></script>
+<script src="effects-text.js"></script>
+<script src="effects-ui.js"></script>
+<script src="effects-motion.js"></script>
+<script src="effects-scenes.js"></script><!--/KIT-->
 <!--APP--><script src="studio.js"></script><!--/APP-->
 </body>
 </html>

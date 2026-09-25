@@ -18,6 +18,7 @@ const block = (name, content) => {
 };
 block('STYLE', `<style>\n${read('studio.css')}</style>`);
 block('LIB', `<script id="km-lib">${lib.replace(/<\/script/gi, '<\\/script')}</script>`);
+block('KIT', `<script>\n${['fx-kit.js', 'effects-text.js', 'effects-ui.js', 'effects-motion.js', 'effects-scenes.js'].map((f) => read(f).replace(/<\/script/gi, '<\\/script')).join('\n')}</script>`);
 block('APP', `<script>\n${read('studio.js').replace(/<\/script/gi, '<\\/script')}</script>`);
 
 if (fontsDir) {

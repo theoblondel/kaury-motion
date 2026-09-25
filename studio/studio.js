@@ -44,15 +44,15 @@
   ];
   const EASE_HELP = 'La façon dont ça accélère et freine.';
   const PALETTE = ['#F1E8CB', '#F56E2E', '#1C1A1A', '#3D5C3D', '#FFFFFF', '#F7C548'];
-  const GROUPS = ['Texte', 'Mouvement', 'Souris et 3D', 'Avancé'];
+  const GROUPS = window.KMS.CATS;
 
   const BASE_CSS = `:root { --display: 'Cabinet Grotesk', 'Arial Black', sans-serif; --text: 'Satoshi', 'Helvetica Neue', Arial, sans-serif; --mono: ui-monospace, Menlo, monospace; }
 body { margin: 0; min-height: 100vh; display: grid; place-items: center; overflow-x: hidden; background: #1C1A1A; color: #F1E8CB; font-family: var(--text); }`;
 
   // ---------- catalogue des effets ----------
-  const FX = [
+  const LEGACY = [
     {
-      id: 'reveal', group: 'Texte', name: 'Titre qui apparaît', use: 'Pour un grand titre d’accueil qui arrive avec style.',
+      id: 'reveal', group: 'Titres et texte', name: 'Titre qui apparaît', use: 'Pour un grand titre d’accueil qui arrive avec style.',
       tip: null,
       controls: [
         { k: 'text', type: 'text', label: 'Ton texte', def: 'Donne du caractère à ta marque' },
@@ -75,7 +75,7 @@ body { margin: 0; min-height: 100vh; display: grid; place-items: center; overflo
       calls: (o) => [{ fn: 'reveal', args: ['.km-title', { effect: o.effect, by: o.by, each: o.each, duration: o.effect === 'type' ? undefined : o.duration, ease: o.ease }] }],
     },
     {
-      id: 'wave', group: 'Texte', name: 'Texte en vague', use: 'Pour un slogan qui bouge en continu et attire l’œil.',
+      id: 'wave', group: 'Titres et texte', name: 'Texte en vague', use: 'Pour un slogan qui bouge en continu et attire l’œil.',
       tip: null,
       controls: [
         { k: 'text', type: 'text', label: 'Ton texte', def: 'Toujours en mouvement' },
@@ -96,7 +96,7 @@ body { margin: 0; min-height: 100vh; display: grid; place-items: center; overflo
       calls: (o) => [{ fn: 'wave', args: ['.km-wave', { amplitude: o.amplitude, duration: o.duration, offset: o.offset, rotate: o.rotate || undefined }] }],
     },
     {
-      id: 'scramble', group: 'Texte', name: 'Texte qui se décode', use: 'Pour un effet tech ou agence créative.',
+      id: 'scramble', group: 'Titres et texte', name: 'Texte qui se décode', use: 'Pour un effet tech ou agence créative.',
       tip: null,
       controls: [
         { k: 'text', type: 'text', label: 'Ton texte', def: 'KAURY STUDIO' },
@@ -118,7 +118,7 @@ body { margin: 0; min-height: 100vh; display: grid; place-items: center; overflo
       },
     },
     {
-      id: 'counter', group: 'Texte', name: 'Chiffre qui compte', use: 'Pour tes chiffres clés : clients, projets, années.',
+      id: 'counter', group: 'Titres et texte', name: 'Chiffre qui compte', use: 'Pour tes chiffres clés : clients, projets, années.',
       tip: null,
       controls: [
         { k: 'to', type: 'range', label: 'Nombre final', min: 10, max: 100000, step: 10, def: 12500 },
@@ -140,7 +140,7 @@ body { margin: 0; min-height: 100vh; display: grid; place-items: center; overflo
       calls: (o) => [{ fn: 'counter', args: ['.km-count', { to: o.to, prefix: o.prefix || undefined, suffix: o.suffix || undefined, decimals: +o.decimals || undefined, duration: o.duration, ease: o.ease }] }],
     },
     {
-      id: 'marquee', group: 'Mouvement', name: 'Bandeau défilant', use: 'Pour lister tes services ou tes clients en continu.',
+      id: 'marquee', group: 'Défilement', name: 'Bandeau défilant', use: 'Pour lister tes services ou tes clients en continu.',
       tip: 'Fais défiler la page : le bandeau accélère et penche',
       controls: [
         { k: 'words', type: 'text', label: 'Tes mots', help: 'Sépare-les par des virgules.', def: 'Branding, Web design, Vidéo, Photo, Réseaux sociaux' },
@@ -165,7 +165,7 @@ body { margin: 0; min-height: 100vh; display: grid; place-items: center; overflo
       calls: (o) => [{ fn: 'marquee', args: ['.km-band', { speed: o.speed, direction: o.direction, gap: o.gap, scrollBoost: o.scrollBoost, skew: o.skew, pauseOnHover: o.pauseOnHover }] }],
     },
     {
-      id: 'ring', group: 'Mouvement', name: 'Badge rotatif', use: 'Pour un badge « Disponible » ou autour de ton logo.',
+      id: 'ring', group: 'Défilement', name: 'Badge rotatif', use: 'Pour un badge « Disponible » ou autour de ton logo.',
       tip: 'Fais défiler la page pour le faire tourner plus vite',
       controls: [
         { k: 'text', type: 'text', label: 'Ton texte', help: 'Termine par « · » pour que la boucle se raccorde bien.', def: 'Kaury Studio · Vevey · Suisse ·' },
@@ -189,7 +189,7 @@ body { margin: 0; min-height: 100vh; display: grid; place-items: center; overflo
       calls: (o) => [{ fn: 'ring', args: ['.km-ring', { radius: o.radius, fontSize: o.fontSize, speed: o.speed, scrollBoost: o.scrollBoost || undefined }] }],
     },
     {
-      id: 'stagger', group: 'Mouvement', name: 'Vague de points', use: 'Un fond animé qui fait « waouh » au premier regard.',
+      id: 'stagger', group: 'Fonds animés', name: 'Vague de points', use: 'Un fond animé qui fait « waouh » au premier regard.',
       tip: 'Clique sur un point pour lancer une vague depuis lui',
       controls: [
         { k: 'cols', type: 'range', label: 'Colonnes', min: 4, max: 22, step: 1, def: 16 },
@@ -237,7 +237,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
       uses: ['animate', 'stagger'],
     },
     {
-      id: 'magnetic', group: 'Souris et 3D', name: 'Bouton aimanté', use: 'Pour tes boutons d’action : « Contact », « Réserver »…',
+      id: 'magnetic', group: 'Boutons', name: 'Bouton aimanté', use: 'Pour tes boutons d’action : « Contact », « Réserver »…',
       tip: 'Approche ta souris du bouton',
       tipTouch: 'Effet à la souris : essaie-le sur ordinateur',
       controls: [
@@ -259,7 +259,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
       calls: (o) => [{ fn: 'magnetic', args: ['.km-magnet', { strength: o.strength, radius: o.radius, stiffness: o.stiffness, inner: 'span' }] }],
     },
     {
-      id: 'tilt', group: 'Souris et 3D', name: 'Carte 3D', use: 'Pour présenter un projet, un produit ou une offre.',
+      id: 'tilt', group: 'Cartes et 3D', name: 'Carte 3D', use: 'Pour présenter un projet, un produit ou une offre.',
       tip: 'Passe la souris sur la carte',
       tipTouch: 'Effet à la souris : essaie-le sur ordinateur',
       controls: [
@@ -282,7 +282,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
       calls: (o) => [{ fn: 'tilt', args: ['.km-card', { max: o.max, perspective: o.perspective, scale: o.scale, glare: o.glare }] }],
     },
     {
-      id: 'extrude', group: 'Souris et 3D', name: 'Logo en 3D', use: 'Donne une vraie épaisseur à ton logo, sans logiciel 3D.',
+      id: 'extrude', group: 'Cartes et 3D', name: 'Logo en 3D', use: 'Donne une vraie épaisseur à ton logo, sans logiciel 3D.',
       tip: 'Il se balance tout seul. Survole-le pour le tourner',
       tipTouch: 'Il se balance tout seul',
       controls: [
@@ -312,7 +312,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
       ].filter(Boolean),
     },
     {
-      id: 'timeline', group: 'Avancé', name: 'Séquence d’intro', use: 'Logo, titre puis bouton : une ouverture de page en trois temps.',
+      id: 'timeline', group: 'Intros et séquences', name: 'Séquence d’intro', use: 'Logo, titre puis bouton : une ouverture de page en trois temps.',
       tip: null,
       controls: [
         { k: 'title', type: 'text', label: 'Titre', def: 'Des animations avec du caractère' },
@@ -344,7 +344,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
       }],
     },
     {
-      id: 'spring', group: 'Avancé', name: 'Rebond physique', use: 'Des mouvements qui rebondissent comme un vrai ressort.',
+      id: 'spring', group: 'Intros et séquences', name: 'Rebond physique', use: 'Des mouvements qui rebondissent comme un vrai ressort.',
       tip: null,
       controls: [
         { k: 'mass', type: 'range', label: 'Poids', help: 'Plus lourd = plus lent et plus d’élan.', min: 0.2, max: 5, step: 0.1, def: 1 },
@@ -395,6 +395,13 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     },
   ];
 
+  // Les effets du kit (fichiers effects-*.js) rejoignent ceux du studio,
+  // rangés dans l'ordre des catégories.
+  const FX = [...LEGACY, ...window.KMS.list.map((f) => ({ ...f, group: f.cat }))]
+    .map((f, i) => ({ f, i }))
+    .sort((a, b) => GROUPS.indexOf(a.f.group) - GROUPS.indexOf(b.f.group) || a.i - b.i)
+    .map((x) => x.f);
+
   // Réglages visibles d'emblée ; le reste va dans « Plus de réglages ».
   const ESSENTIALS = {
     reveal: ['text', 'effect', 'by', 'color'],
@@ -426,6 +433,24 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
   let tab = 'file';
   let edCleanup = () => {};
 
+  // Préfixe chaque sélecteur par le cadre ; les @keyframes passent tels quels.
+  function scopeCss(css, scope) {
+    let out = '', i = 0;
+    while (i < css.length) {
+      const open = css.indexOf('{', i);
+      if (open < 0) { out += css.slice(i); break; }
+      const prelude = css.slice(i, open).trim();
+      let depth = 1, j = open + 1;
+      while (j < css.length && depth) { if (css[j] === '{') depth++; else if (css[j] === '}') depth--; j++; }
+      const body = css.slice(open + 1, j - 1);
+      if (/^@(keyframes|-webkit-keyframes|font-face)/.test(prelude)) out += `${prelude} {${body}}\n`;
+      else if (prelude.startsWith('@')) out += `${prelude} {${scopeCss(body, scope)}}\n`;
+      else out += `${prelude.split(',').map((x) => (/^(:root|html|body)\b/.test(x.trim()) ? scope : `${scope} ${x.trim()}`)).join(', ')} {${body}}\n`;
+      i = j;
+    }
+    return out;
+  }
+
   // ---------- jouer un effet dans un cadre ----------
   let uid = 0;
   function mountInto(box, fx, o) {
@@ -439,10 +464,11 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     };
     if (!box.id) box.id = `km-box-${++uid}`;
     const scope = `#${box.id}`;
-    const css = fx.css(o).replace(/(^|\})\s*([^{}@]+)\{/g, (m, a, sel) => `${a}\n${sel.split(',').map((x) => `${scope} ${x.trim()}`).join(', ')} {`);
+    const css = scopeCss(fx.css(o), scope);
     box.innerHTML = `<style>${css}</style>${fx.html(o)}`;
     const scoped = (args) => args.map((a) => (typeof a === 'string' && /^[.#]/.test(a) ? box.querySelectorAll(a) : a));
-    if (fx.run) fx.run(o, box, track);
+    if (fx.code) [].concat(fx.code(box, o, KM) || []).forEach(track);
+    else if (fx.run) fx.run(o, box, track);
     else for (const c of fx.calls(o)) {
       let r = track(KM[c.fn](...resolve(scoped(c.args))));
       for (const [m, ...args] of c.chain || []) r = r[m](...resolve(scoped(args)));
@@ -455,28 +481,37 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
   const gallery = $('#gallery');
   const cards = [];
   function renderGallery() {
-    gallery.innerHTML = FX.map((f, i) => `
-      <article class="card" data-group="${f.group}">
-        <button type="button" class="card-hit" data-i="${i}" aria-label="Personnaliser : ${esc(f.name)}"></button>
-        <div class="thumb"><div class="thumb-inner" style="width:${VW}px;height:${VH}px"></div></div>
-        <div class="card-body">
-          <span class="card-group">${f.group}</span>
-          <h3>${f.name}</h3>
-          <p>${f.use}</p>
-          <span class="card-cta">Personnaliser <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-        </div>
-      </article>`).join('');
-    gallery.querySelectorAll('.card').forEach((card, i) => {
-      const inner = card.querySelector('.thumb-inner');
-      const c = { card, inner, fx: FX[i], stop: () => {}, timer: 0, visible: false };
-      cards.push(c);
+    gallery.innerHTML = GROUPS.map((g) => {
+      const list = FX.filter((f) => f.group === g);
+      return `<section class="gal-sec" data-group="${g}" aria-label="${g}">
+        <div class="gal-sec-head"><h3>${g}</h3><span>${list.length} effets</span></div>
+        <div class="gal-grid">${list.map((f) => `
+          <article class="card" data-i="${FX.indexOf(f)}">
+            <button type="button" class="card-hit" data-i="${FX.indexOf(f)}" aria-label="Personnaliser : ${esc(f.name)}"></button>
+            <div class="thumb"><div class="thumb-inner" style="width:${VW}px;height:${VH}px"></div></div>
+            <div class="card-body">
+              <h4>${f.name}</h4>
+              <p>${f.use}</p>
+              <span class="card-cta">Personnaliser <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+          </article>`).join('')}</div></section>`;
+    }).join('');
+    gallery.querySelectorAll('.card').forEach((card) => {
+      const fx = FX[+card.dataset.i];
+      card.dataset.search = `${fx.name} ${fx.use} ${fx.group}`.toLowerCase();
+      cards.push({ card, inner: card.querySelector('.thumb-inner'), fx, stop: () => {}, timer: 0, visible: false });
     });
     const fit = () => cards.forEach((c) => (c.inner.style.transform = `scale(${c.card.querySelector('.thumb').clientWidth / VW})`));
     fit();
     if (typeof ResizeObserver !== 'undefined') new ResizeObserver(fit).observe(gallery);
     const play = (c) => {
       c.stop();
-      c.stop = mountInto(c.inner, c.fx, values[c.fx.id]);
+      try {
+        c.stop = mountInto(c.inner, c.fx, values[c.fx.id]);
+      } catch (err) {
+        c.stop = () => {};
+        console.error(`[studio] ${c.fx.id}`, err);
+      }
     };
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) {
@@ -485,13 +520,14 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
         clearInterval(c.timer);
         if (c.visible) {
           play(c);
-          if (ONE_SHOT.has(c.fx.id)) c.timer = setInterval(() => !current && play(c), 5200);
+          if (ONE_SHOT.has(c.fx.id) || c.fx.replay) c.timer = setInterval(() => !current && play(c), c.fx.replay || 5200);
         } else {
           c.stop();
           c.stop = () => {};
+          c.inner.innerHTML = '';
         }
       }
-    }, { rootMargin: '120px' });
+    }, { rootMargin: '80px' });
     cards.forEach((c) => io.observe(c.card));
     gallery.addEventListener('click', (e) => {
       const b = e.target.closest('.card-hit');
@@ -505,14 +541,34 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
   }
   let refreshCard = () => {};
 
-  // Filtres par catégorie
-  $('#filters').innerHTML = ['Tout', ...GROUPS].map((g, i) => `<button type="button" class="filter" data-g="${g}" aria-pressed="${i === 0}">${g}</button>`).join('');
+  // Filtres par catégorie et recherche
+  let group = 'Tout', query = '';
+  function applyFilter() {
+    let shown = 0;
+    document.querySelectorAll('.gal-sec').forEach((sec) => {
+      let n = 0;
+      sec.querySelectorAll('.card').forEach((card) => {
+        const ok = !query || card.dataset.search.includes(query);
+        card.hidden = !ok;
+        if (ok) n++;
+      });
+      sec.hidden = !n || (group !== 'Tout' && sec.dataset.group !== group);
+      if (!sec.hidden) shown += n;
+    });
+    $('#gal-empty').hidden = shown > 0;
+    $('#gal-count').textContent = `${shown} effet${shown > 1 ? 's' : ''}`;
+  }
+  $('#filters').innerHTML = ['Tout', ...GROUPS].map((g, i) => `<button type="button" class="filter" data-g="${g}" aria-pressed="${i === 0}">${g}<span>${g === 'Tout' ? FX.length : FX.filter((f) => f.group === g).length}</span></button>`).join('');
   $('#filters').addEventListener('click', (e) => {
     const b = e.target.closest('.filter');
     if (!b) return;
     document.querySelectorAll('.filter').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-    const g = b.dataset.g;
-    document.querySelectorAll('.card').forEach((c) => (c.hidden = g !== 'Tout' && c.dataset.group !== g));
+    group = b.dataset.g;
+    applyFilter();
+  });
+  $('#search').addEventListener('input', (e) => {
+    query = e.target.value.trim().toLowerCase();
+    applyFilter();
   });
 
   // ---------- éditeur ----------
@@ -612,7 +668,7 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
   }
   let advOpen = false;
   function renderControls() {
-    const ess = ESSENTIALS[current.id] || [];
+    const ess = ESSENTIALS[current.id] || current.controls.slice(0, current.ess ?? 4).map((c) => c.k);
     const main = current.controls.filter((c) => ess.includes(c.k));
     const adv = current.controls.filter((c) => !ess.includes(c.k));
     $('#controls').innerHTML = main.map(controlHTML).join('') +
@@ -621,7 +677,9 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     $('#more')?.addEventListener('toggle', (e) => (advOpen = e.target.open));
   }
   function renderPresets(active) {
-    $('#presets').innerHTML = current.presets.map(([name], i) => `<button type="button" class="preset" data-i="${i}" aria-pressed="${i === active}">${name}</button>`).join('');
+    const list = current.presets || [];
+    $('#presets-label').textContent = list.length ? 'Styles prêts' : 'Envie d’essayer ?';
+    $('#presets').innerHTML = list.map(([name], i) => `<button type="button" class="preset" data-i="${i}" aria-pressed="${i === active}">${name}</button>`).join('');
   }
 
   let debounce;
@@ -698,10 +756,19 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
       else if (Array.isArray(v)) v.forEach(walk);
       else if (plain(v)) Object.values(v).forEach(walk);
     };
-    if (!fx.run) for (const c of fx.calls(o)) { names.add(c.fn); walk(c.args); (c.chain || []).forEach(walk); }
+    if (!fx.run && !fx.code) for (const c of fx.calls(o)) { names.add(c.fn); walk(c.args); (c.chain || []).forEach(walk); }
     return [...names];
   }
+  // Corps de fx.code, dés-indenté ; le « return » final devient une simple ligne.
+  function codeBody(fx) {
+    const src = fx.code.toString();
+    let body = src.slice(src.indexOf('{') + 1, src.lastIndexOf('}'));
+    const lines = body.replace(/^\s*\n/, '').replace(/\s+$/, '').split('\n');
+    const ind = Math.min(...lines.filter((l) => l.trim()).map((l) => l.match(/^ */)[0].length));
+    return lines.map((l) => l.slice(ind)).join('\n').replace(/^return /m, '// Garde ceci pour arrêter l’effet plus tard si besoin :\nconst stopEffect = ');
+  }
   function jsBody(fx, o) {
+    if (fx.code) return `// Tes réglages : modifie-les ici\nconst o = ${lit(o)};\nconst root = document;\n\n${codeBody(fx)}`;
     if (fx.script) return fx.script(o);
     return fx.calls(o).map((c) => {
       let s = `${c.fn}(${c.args.map((a) => lit(a)).join(', ')})`;
@@ -717,8 +784,10 @@ dots.forEach((dot, i) => dot.addEventListener('click', () => wave(i)));`;
     try { return (libCache = (await (await fetch(el.src)).text()).trim()); } catch { return '/* Colle ici le contenu de kaury-motion.min.js */'; }
   }
   const LIB_MARK = '/*__KM_LIB__*/';
-  const jsModule = (fx, o) => `// Copie dist/kaury-motion.js du dépôt dans ton projet, puis :\nimport { ${usedNames(fx, o).join(', ')} } from './kaury-motion.js';\n\n${jsBody(fx, o)}\n`;
-  const snippet = (fx, o, lib) => `<!-- Kaury Motion : ${fx.name} -->\n${fx.html(o)}\n\n<style>\n${fx.css(o)}\n</style>\n\n<script>${lib}</script>\n<script>\nconst { ${usedNames(fx, o).join(', ')} } = KauryMotion;\n\n${jsBody(fx, o)}\n</script>\n`;
+  const importLine = (fx, o) => (fx.code ? `import * as KM from './kaury-motion.js';` : `import { ${usedNames(fx, o).join(', ')} } from './kaury-motion.js';`);
+  const globalLine = (fx, o) => (fx.code ? `const KM = KauryMotion;` : `const { ${usedNames(fx, o).join(', ')} } = KauryMotion;`);
+  const jsModule = (fx, o) => `// Copie dist/kaury-motion.js du dépôt dans ton projet, puis :\n${importLine(fx, o)}\n\n${jsBody(fx, o)}\n`;
+  const snippet = (fx, o, lib) => `<!-- Kaury Motion : ${fx.name} -->\n${fx.html(o)}\n\n<style>\n${fx.css(o)}\n</style>\n\n<script>${lib}</script>\n<script>\n${globalLine(fx, o)}\n\n${jsBody(fx, o)}\n</script>\n`;
   const page = (fx, o, lib) => `<!doctype html>
 <html lang="fr">
 <head>
@@ -736,7 +805,7 @@ ${fx.html(o)}
 
 <script>${lib}</script>
 <script>
-const { ${usedNames(fx, o).join(', ')} } = KauryMotion;
+${globalLine(fx, o)}
 
 ${jsBody(fx, o)}
 </script>
@@ -871,9 +940,12 @@ ${jsBody(fx, o)}
   $('#cursor-toggle').checked = store.get('km-cursor') !== '0';
   $('#cursor-toggle').addEventListener('change', (e) => cursorOn(e.target.checked));
 
+  $('#fx-total').dataset.count = FX.length;
+  $('#fx-total').textContent = FX.length;
   hero();
   cursorOn($('#cursor-toggle').checked);
   renderGallery();
+  applyFilter();
   // Un lien direct (#tilt, #wave…) ouvre l'effet dans l'éditeur.
   const fromHash = () => {
     const fx = FX.find((f) => f.id === location.hash.slice(1));

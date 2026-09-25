@@ -11,7 +11,7 @@ A zero-dependency motion framework: a tween engine with real springs, timelines 
 
 ## The studio
 
-`studio/index.html` is a playground for every effect, written in French for non-developers: browse a gallery where every effect plays live, open one in a full-screen editor, start from a ready-made style (or hit *Surprise*), tune it, then download a **standalone page** with the framework inlined, copy a self-contained block for WordPress / Webflow / Wix, or copy the ES module code.
+`studio/index.html` is a playground for every effect, written in French for non-developers: browse a gallery of 116 effects in 9 categories (text, buttons, cards and 3D, scrolling, animated backgrounds, loaders, micro-interactions, SVG shapes, intros), each playing live, open one in a full-screen editor, start from a ready-made style (or hit *Surprise*), tune it, then download a **standalone page** with the framework inlined, copy a self-contained block for WordPress / Webflow / Wix, or copy the ES module code.
 
 ```bash
 npm install
