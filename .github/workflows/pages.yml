@@ -31,6 +31,8 @@ jobs:
       - run: npm run studio:bundle
       - run: cp dist/kaury-motion.js dist/kaury-motion.min.js site/ && touch site/.nojekyll
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
