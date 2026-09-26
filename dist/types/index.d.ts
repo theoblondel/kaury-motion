@@ -1,0 +1,16 @@
+export { animate, set, getTransform, Tween, type AnimateOptions, type PropValue, type Targets } from './core/animate';
+export { timeline, Timeline, type TimelineOptions, type Position } from './core/timeline';
+export { Playback, type PlaybackOptions } from './core/playback';
+export { stagger, type StaggerOptions } from './core/stagger';
+export { easings, cubicBezier, spring, resolveEase, type Easing, type SpringOptions } from './core/ease';
+export { interpolator, clamp, lerp, mapRange } from './core/interpolate';
+export { ticker, config, prefersReducedMotion } from './core/ticker';
+export { split, type SplitOptions, type SplitResult } from './fx/split';
+export { reveal, scramble, counter, wave, presets, type RevealOptions, type ScrambleOptions, type CounterOptions, type WaveOptions } from './fx/text';
+export { marquee, type MarqueeOptions, type MarqueeControls } from './fx/marquee';
+export { ring, type RingOptions } from './fx/ring';
+export { magnetic, tilt, cursor, type MagneticOptions, type TiltOptions, type CursorOptions } from './fx/pointer';
+export { inView, parallax, scrub, scrollVelocity, type InViewOptions, type ParallaxOptions, type ScrubOptions } from './fx/scroll';
+export { extrude, float, type ExtrudeOptions, type FloatOptions } from './fx/depth';
+export { auto, readOptions } from './auto';
+export declare const version = "0.1.0";
