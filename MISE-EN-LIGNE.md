@@ -8,7 +8,11 @@ Tout est prêt dans le code. Il reste quatre gestes à faire sur tes comptes, pa
 2. Nom : `kaury-motion`, visibilité **Public**, et **ne coche rien** (ni README, ni licence).
 3. Clique **Create repository**, puis dis à Claude « le dépôt est créé » : il y pousse tout le projet.
 
-## 2. Publier le studio en ligne (GitHub Pages)
+## 2. Publier le studio en ligne
+
+Le studio est déjà servi par kaury.studio sur **https://kaury.studio/motion/** (fichier `public/motion/index.html` du site). Pour le mettre à jour : `npm run build && node studio/bundle.mjs` puis copier le fichier dans le site.
+
+GitHub Pages, en plus, si tu veux une copie sur github.io :
 
 1. Dans le dépôt : **Settings → Pages → Build and deployment → Source : GitHub Actions**.
 2. Au prochain envoi sur `main`, le studio est en ligne sur `https://theoblondel.github.io/kaury-motion/`.

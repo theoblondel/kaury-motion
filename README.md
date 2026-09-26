@@ -6,7 +6,7 @@
 
 Spectacular web animation in one small file, by [Kaury Studio](https://kaury.studio).
 
-**[Open the studio →](https://theoblondel.github.io/kaury-motion/)** 119 effects you can tune live and take away as code or as a ready-made page.
+**[Open the studio →](https://kaury.studio/motion/)** 119 effects you can tune live and take away as code or as a ready-made page.
 
 A zero-dependency motion framework: a tween engine with real springs, timelines and staggers, plus ready-made effects (split-text reveals, marquees, text rings, magnetic buttons, 3D tilt, 3D extrusion, scramble, counters, scroll-linked animation) and a visual **studio** where you tune every effect and export the code.
 
