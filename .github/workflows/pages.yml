@@ -1,8 +1,9 @@
 name: Studio en ligne
 
+# Copie facultative du studio sur GitHub Pages (le studio officiel est sur
+# kaury.studio/motion). À lancer à la main après avoir activé Pages :
+# Settings → Pages → Source : GitHub Actions.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
